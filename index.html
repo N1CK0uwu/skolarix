@@ -46,14 +46,14 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font-family: var(--font-body); cursor: pointer; }
 img { display: block; max-width: 100%; }
- 
+
 /* ============================================================
    SCROLLBAR
    ============================================================ */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--dark); }
 ::-webkit-scrollbar-thumb { background: rgba(139,124,246,0.4); border-radius: 3px; }
- 
+
 /* ============================================================
    NOISE TEXTURE OVERLAY
    ============================================================ */
@@ -65,7 +65,7 @@ body::before {
   pointer-events: none;
   z-index: 9999;
 }
- 
+
 /* ============================================================
    NAV
    ============================================================ */
@@ -102,7 +102,7 @@ nav {
 .btn-teal { background: var(--teal); color: var(--black); font-weight: 600; }
 .btn-teal:hover { filter: brightness(1.1); transform: translateY(-1px); }
 .nav-mobile-toggle { display: none; background: none; border: none; color: var(--text); font-size: 24px; }
- 
+
 /* ============================================================
    HERO
    ============================================================ */
@@ -173,7 +173,7 @@ nav {
   margin-bottom: 4px;
 }
 .hero-stat-lbl { font-size: 12px; color: var(--muted); }
- 
+
 /* floating cards */
 .float-cards {
   position: absolute; inset: 0; pointer-events: none; z-index: 2;
@@ -201,7 +201,7 @@ nav {
 .fcard-sub  { font-size: 11px; color: var(--muted); margin-bottom: 7px; }
 .fcard-stars { color: var(--amber); font-size: 12px; }
 .fcard-price { font-size: 13px; font-weight: 600; color: var(--purple); margin-top: 4px; }
- 
+
 /* ============================================================
    SECTIONS COMMON
    ============================================================ */
@@ -218,7 +218,7 @@ section { padding: 90px 5%; }
   line-height: 1.15; margin-bottom: 16px;
 }
 .section-sub { font-size: 15px; color: var(--muted); max-width: 480px; line-height: 1.7; }
- 
+
 /* ============================================================
    SEARCH BAR
    ============================================================ */
@@ -246,7 +246,7 @@ section { padding: 90px 5%; }
   outline: none; cursor: pointer;
 }
 .search-wrap select option { background: var(--panel); }
- 
+
 /* ============================================================
    MATERIE
    ============================================================ */
@@ -307,7 +307,7 @@ section { padding: 90px 5%; }
   border: 1px dashed var(--border2); border-radius: var(--r-lg);
   display: none;
 }
- 
+
 /* ============================================================
    TOP INSEGNANTI
    ============================================================ */
@@ -350,7 +350,7 @@ section { padding: 90px 5%; }
   margin-top: 10px;
 }
 .tc-price span { font-size: 12px; font-weight: 400; color: var(--muted); }
- 
+
 /* ============================================================
    COME FUNZIONA
    ============================================================ */
@@ -375,7 +375,7 @@ section { padding: 90px 5%; }
 }
 .how-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .how-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
- 
+
 /* ============================================================
    RECENSIONI
    ============================================================ */
@@ -397,7 +397,7 @@ section { padding: 90px 5%; }
 }
 .rev-name { font-size: 13px; font-weight: 500; }
 .rev-role { font-size: 11px; color: var(--muted); }
- 
+
 /* ============================================================
    CTA BAND
    ============================================================ */
@@ -414,7 +414,7 @@ section { padding: 90px 5%; }
 }
 .cta-band p { color: var(--muted); font-size: 15px; max-width: 420px; margin: 0 auto 32px; }
 .cta-dual { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
- 
+
 /* ============================================================
    FOOTER
    ============================================================ */
@@ -450,7 +450,7 @@ footer {
   transition: all 0.15s;
 }
 .social-btn:hover { background: rgba(139,124,246,0.2); color: var(--purple); border-color: rgba(139,124,246,0.4); }
- 
+
 /* ============================================================
    MODAL REGISTER
    ============================================================ */
@@ -500,7 +500,7 @@ footer {
   color: var(--muted); font-size: 18px; cursor: pointer;
 }
 .modal-wrap { position: relative; }
- 
+
 /* ============================================================
    TOAST
    ============================================================ */
@@ -514,7 +514,7 @@ footer {
   transition: all 0.3s; pointer-events: none;
 }
 .toast.show { transform: translateY(0); opacity: 1; }
- 
+
 /* ============================================================
    ANIMATIONS
    ============================================================ */
@@ -523,7 +523,7 @@ footer {
 @keyframes floatA   { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-10px)} }
 @keyframes floatB   { 0%,100%{transform:translateY(-6px)} 50%{transform:translateY(6px)} }
 @keyframes countUp  { from { opacity: 0; } to { opacity: 1; } }
- 
+
 /* ============================================================
    SCROLL REVEAL
    ============================================================ */
@@ -532,7 +532,7 @@ footer {
   transition: opacity 0.55s ease, transform 0.55s ease;
 }
 .reveal.visible { opacity: 1; transform: none; }
- 
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */
@@ -546,7 +546,7 @@ footer {
 </style>
 </head>
 <body>
- 
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo"><i class="ti ti-school" style="color:var(--purple)"></i> Skola<span>rix</span></div>
@@ -557,19 +557,19 @@ footer {
     <a href="#recensioni">Recensioni</a>
   </div>
   <div class="nav-actions">
-    <button class="btn btn-ghost" onclick="openModal('login')">Accedi</button>
-    <button class="btn btn-primary" onclick="openModal('register')">Registrati</button>
+    <a href="auth.html" class="btn btn-ghost">Accedi</a>
+    <a href="auth.html#register" class="btn btn-primary">Registrati</a>
   </div>
-  <button class="nav-mobile-toggle" onclick="openModal('register')"><i class="ti ti-menu-2"></i></button>
+  <button class="nav-mobile-toggle" onclick="window.location='auth.html#register'"><i class="ti ti-menu-2"></i></button>
 </nav>
- 
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg">
     <canvas id="hero-canvas"></canvas>
     <div class="hero-glow"></div>
   </div>
- 
+
   <div class="float-cards">
     <div class="fcard fc1">
       <div class="fcard-av" style="background:rgba(139,124,246,0.2);color:var(--purple)">MR</div>
@@ -586,14 +586,14 @@ footer {
       <div class="fcard-price">€18/ora</div>
     </div>
   </div>
- 
+
   <div class="hero-content">
     <div class="hero-badge"><i class="ti ti-bolt"></i> Piattaforma #1 di ripetizioni in Italia</div>
     <h1>Trova il tuo<br><span class="accent">insegnante</span><br><span class="accent2">ideale</span></h1>
     <p class="hero-sub">Connetti studenti e insegnanti qualificati per ogni materia. Prenota, paga in sicurezza e raggiungi i tuoi obiettivi scolastici.</p>
     <div class="hero-cta">
-      <button class="btn btn-primary btn-lg" onclick="openModal('register')"><i class="ti ti-user-plus"></i> Inizia come studente</button>
-      <button class="btn btn-ghost btn-lg" onclick="openModal('teacher')"><i class="ti ti-school"></i> Diventa insegnante</button>
+      <button class="btn btn-primary btn-lg" onclick="window.location='auth.html#register'"><i class="ti ti-user-plus"></i> Inizia come studente</button>
+      <button class="btn btn-ghost btn-lg" onclick="window.location='auth.html#register'"><i class="ti ti-school"></i> Diventa insegnante</button>
     </div>
     <div class="hero-stats">
       <div class="hero-stat">
@@ -615,7 +615,7 @@ footer {
     </div>
   </div>
 </section>
- 
+
 <!-- SEARCH -->
 <div class="search-section">
   <div class="search-wrap">
@@ -632,7 +632,7 @@ footer {
     <button class="btn btn-primary" style="flex-shrink:0" onclick="document.getElementById('materie').scrollIntoView({behavior:'smooth'})">Cerca</button>
   </div>
 </div>
- 
+
 <!-- MATERIE -->
 <section class="materie-section" id="materie">
   <div class="reveal">
@@ -662,7 +662,7 @@ footer {
     <div class="empty-msg" id="emptyMsg">Nessuna materia trovata</div>
   </div>
 </section>
- 
+
 <!-- TOP INSEGNANTI -->
 <section id="insegnanti">
   <div class="reveal">
@@ -671,7 +671,7 @@ footer {
     <p class="section-sub">Tutti verificati, con recensioni reali e anni di esperienza.</p>
   </div>
   <div class="teachers-grid reveal" style="transition-delay:0.15s">
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(139,124,246,0.2);color:var(--purple)">MR</div>
         <div><div class="tc-name">Marco Rossi</div><div class="tc-subject">Matematica · Fisica · Chimica</div></div>
@@ -681,7 +681,7 @@ footer {
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Professore di liceo scientifico con 8 anni di esperienza. Specializzato in preparazione maturità.</div>
       <div class="tc-price">€22 <span>/ ora</span></div>
     </div>
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(45,212,160,0.2);color:var(--teal)">SB</div>
         <div><div class="tc-name">Sofia Bianchi</div><div class="tc-subject">Inglese · Francese · Spagnolo</div></div>
@@ -691,7 +691,7 @@ footer {
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Madrelingua certificata Cambridge. Lezioni per tutti i livelli, dal biennio alla laurea.</div>
       <div class="tc-price">€18 <span>/ ora</span></div>
     </div>
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(55,138,221,0.2);color:#85b7eb">LV</div>
         <div><div class="tc-name">Luca Verdi</div><div class="tc-subject">Python · JavaScript · Algoritmi</div></div>
@@ -701,7 +701,7 @@ footer {
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Ingegnere informatico, insegna coding da zero a livello avanzato. PCTO aziendale disponibile.</div>
       <div class="tc-price">€28 <span>/ ora</span></div>
     </div>
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(245,166,35,0.2);color:var(--amber)">GF</div>
         <div><div class="tc-name">Giulia Ferrari</div><div class="tc-subject">Latino · Greco · Italiano</div></div>
@@ -711,7 +711,7 @@ footer {
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Laureata in Lettere Classiche. Specializzata in liceo classico e traduzione testi antichi.</div>
       <div class="tc-price">€20 <span>/ ora</span></div>
     </div>
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(212,83,126,0.2);color:#ed93b1">AC</div>
         <div><div class="tc-name">Andrea Conti</div><div class="tc-subject">Economia · Ragioneria · Diritto</div></div>
@@ -721,7 +721,7 @@ footer {
       <div style="font-size:12px;color:var(--muted);margin-top:8px">Dottore commercialista, insegna materie economiche per istituti tecnici commerciali.</div>
       <div class="tc-price">€24 <span>/ ora</span></div>
     </div>
-    <div class="teacher-card" onclick="openModal('register')">
+    <div class="teacher-card" onclick="window.location='auth.html#register'">
       <div class="tc-top">
         <div class="tc-av" style="background:rgba(99,153,34,0.2);color:#97c459">ER</div>
         <div><div class="tc-name">Elena Romano</div><div class="tc-subject">Scienze · Biologia · Chimica</div></div>
@@ -733,10 +733,10 @@ footer {
     </div>
   </div>
   <div style="text-align:center;margin-top:32px">
-    <button class="btn btn-ghost btn-lg" onclick="openModal('register')"><i class="ti ti-users"></i> Vedi tutti gli insegnanti</button>
+    <button class="btn btn-ghost btn-lg" onclick="window.location='auth.html#register'"><i class="ti ti-users"></i> Vedi tutti gli insegnanti</button>
   </div>
 </section>
- 
+
 <!-- COME FUNZIONA -->
 <section class="how-section" id="come-funziona">
   <div class="reveal">
@@ -777,7 +777,7 @@ footer {
     </div>
   </div>
 </section>
- 
+
 <!-- RECENSIONI -->
 <section id="recensioni">
   <div class="reveal">
@@ -835,19 +835,19 @@ footer {
     </div>
   </div>
 </section>
- 
+
 <!-- CTA BAND -->
 <div class="cta-band">
   <div class="reveal">
     <h2>Pronto a migliorare<br>i tuoi voti?</h2>
     <p>Iscriviti gratis. Prima consultazione con l'insegnante sempre gratuita.</p>
     <div class="cta-dual">
-      <button class="btn btn-teal btn-lg" onclick="openModal('register')"><i class="ti ti-user-plus"></i> Registrati come studente</button>
-      <button class="btn btn-ghost btn-lg" onclick="openModal('teacher')"><i class="ti ti-school"></i> Diventa insegnante</button>
+      <button class="btn btn-teal btn-lg" onclick="window.location='auth.html#register'"><i class="ti ti-user-plus"></i> Registrati come studente</button>
+      <button class="btn btn-ghost btn-lg" onclick="window.location='auth.html#register'"><i class="ti ti-school"></i> Diventa insegnante</button>
     </div>
   </div>
 </div>
- 
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-top">
@@ -860,7 +860,7 @@ footer {
       <a href="#materie">Cerca materie</a>
       <a href="#insegnanti">Insegnanti</a>
       <a href="#come-funziona">Come funziona</a>
-      <a href="#" onclick="openModal('teacher')">Diventa insegnante</a>
+      <a href="#" onclick="window.location='auth.html#register'">Diventa insegnante</a>
     </div>
     <div class="footer-col">
       <h4>Supporto</h4>
@@ -886,7 +886,7 @@ footer {
     </div>
   </div>
 </footer>
- 
+
 <!-- MODAL -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
   <div class="modal modal-wrap">
@@ -900,14 +900,14 @@ footer {
     <div class="form-group"><label>Nome e cognome</label><input type="text" placeholder="Mario Rossi"></div>
     <div class="form-group"><label>Email</label><input type="email" placeholder="mario@email.com"></div>
     <div class="form-group"><label>Password</label><input type="password" placeholder="Min. 8 caratteri"></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="submitForm()">Crea account gratuito</button>
-    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Hai già un account? <a href="#" style="color:var(--purple)" onclick="openModal('login')">Accedi</a></p>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="window.location='auth.html#register'">Crea account gratuito</button>
+    <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px">Hai già un account? <a href="auth.html" style="color:var(--purple)">Accedi</a></p>
   </div>
 </div>
- 
+
 <!-- TOAST -->
 <div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toastMsg"></span></div>
- 
+
 <script>
 /* ============================================================
    CANVAS PARTICLES
@@ -916,12 +916,12 @@ footer {
   const canvas = document.getElementById('hero-canvas');
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
- 
+
   function resize() {
     W = canvas.width  = canvas.offsetWidth;
     H = canvas.height = canvas.offsetHeight;
   }
- 
+
   function mkP() {
     return {
       x: Math.random() * W,
@@ -933,14 +933,14 @@ footer {
       color: ['#8b7cf6','#2dd4a0','#6d5ce8','#c4b9ff'][Math.floor(Math.random()*4)]
     };
   }
- 
+
   function init() {
     resize();
     particles = [];
     const count = Math.min(100, Math.floor(W * H / 12000));
     for (let i = 0; i < count; i++) particles.push(mkP());
   }
- 
+
   function drawLines() {
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -958,7 +958,7 @@ footer {
       }
     }
   }
- 
+
   function animate() {
     ctx.clearRect(0, 0, W, H);
     drawLines();
@@ -973,11 +973,11 @@ footer {
     });
     requestAnimationFrame(animate);
   }
- 
+
   window.addEventListener('resize', init);
   init(); animate();
 })();
- 
+
 /* ============================================================
    COUNTER ANIMATION
    ============================================================ */
@@ -995,7 +995,7 @@ function animateCounters() {
   });
 }
 setTimeout(animateCounters, 600);
- 
+
 /* ============================================================
    MATERIE DATA
    ============================================================ */
@@ -1132,28 +1132,28 @@ const MATERIE = [
     { n: "Preparazione certificazioni linguistiche", t: "opz" },
   ]},
 ];
- 
+
 let activeTab = "all";
- 
+
 function setTab(el) {
   document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   activeTab = el.dataset.cycle;
   filterMaterie();
 }
- 
+
 function syncMaterieSearch(val) {
   document.getElementById('materieSearch').value = val;
   filterMaterie();
   if (val) document.getElementById('materie').scrollIntoView({ behavior: 'smooth' });
 }
- 
+
 function filterMaterie() {
   const q = document.getElementById('materieSearch').value.toLowerCase().trim();
   const container = document.getElementById('materieContainer');
   container.innerHTML = '';
   let total = 0;
- 
+
   MATERIE.forEach(cat => {
     if (activeTab !== 'all' && !cat.cycles.includes(activeTab)) return;
     const filtered = cat.subjects.filter(s =>
@@ -1161,7 +1161,7 @@ function filterMaterie() {
     );
     if (!filtered.length) return;
     total += filtered.length;
- 
+
     const block = document.createElement('div');
     block.className = 'cat-block';
     block.innerHTML = `
@@ -1172,7 +1172,7 @@ function filterMaterie() {
       </div>
       <div class="pills-wrap">
         ${filtered.map(s => `
-          <div class="pill ${s.t}" onclick="openModal('register')">
+          <div class="pill ${s.t}" onclick="window.location='auth.html#register'">
             <i class="ti ti-book-2" style="font-size:12px;opacity:0.6"></i>
             ${s.n}${s.note ? ` <span style="opacity:0.5;font-weight:400">· ${s.note}</span>` : ''}
             <span class="pbadge">${s.t === 'obbl' ? 'obbl.' : 'opz.'}</span>
@@ -1182,13 +1182,13 @@ function filterMaterie() {
     `;
     container.appendChild(block);
   });
- 
+
   document.getElementById('visCount').textContent = total;
   document.getElementById('emptyMsg').style.display = total === 0 ? 'block' : 'none';
 }
- 
+
 filterMaterie();
- 
+
 /* ============================================================
    MODAL
    ============================================================ */
@@ -1197,7 +1197,7 @@ function openModal(type) {
   const title = document.getElementById('modalTitle');
   const sub = document.getElementById('modalSub');
   const roleDiv = document.getElementById('modalRole');
- 
+
   if (type === 'login') {
     title.textContent = 'Bentornato su Skolarix';
     sub.textContent = 'Accedi al tuo account';
@@ -1216,26 +1216,26 @@ function openModal(type) {
   backdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
- 
+
 function closeModal() {
   document.getElementById('modalBackdrop').classList.remove('open');
   document.body.style.overflow = '';
 }
- 
+
 function closeModalOutside(e) {
   if (e.target === document.getElementById('modalBackdrop')) closeModal();
 }
- 
+
 function setRole(el) {
   el.parentElement.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 }
- 
+
 function submitForm() {
   closeModal();
   showToast('Account creato! Benvenuto su Skolarix 🎉');
 }
- 
+
 /* ============================================================
    TOAST
    ============================================================ */
@@ -1245,7 +1245,7 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
 }
- 
+
 /* ============================================================
    SCROLL REVEAL
    ============================================================ */
@@ -1253,7 +1253,7 @@ const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
- 
+
 /* ============================================================
    KEYBOARD ESC
    ============================================================ */
