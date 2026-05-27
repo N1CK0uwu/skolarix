@@ -1003,6 +1003,9 @@ function backToLoginFromReset(){
 /* ── SOCIAL LOGIN ── */
 function socialLogin(p){alert('Integrazione '+p+' OAuth disponibile con Supabase Auth. Configura le credenziali nel backend.');}
 
+/* ── HASH DETECTION (from index.html links) ── */
+if(window.location.hash === "#register") switchTab("register");
+
 /* ── ENTER KEY ── */
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter')return;
