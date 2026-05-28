@@ -1038,6 +1038,36 @@ async function doRegister() {
   const btn = document.getElementById('btn-register');
   btn.classList.add('loading');
 
+  /* ── MODALITA' DEMO (Supabase non configurato) ── */
+  if (!SUPABASE_READY) {
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      localStorage.setItem('skolarix_demo', 'true');
+      localStorage.setItem('skolarix_user_email', email);
+      localStorage.setItem('skolarix_user_nome', nome);
+      localStorage.setItem('skolarix_user_role', currentRole);
+
+      document.getElementById('step-3').classList.remove('active');
+      document.getElementById('step-success').classList.add('active');
+      document.getElementById('sdot-3').classList.remove('active');
+      document.getElementById('sdot-3').classList.add('done');
+      document.getElementById('reg-progress').style.width = '100%';
+
+      document.getElementById('success-title').textContent = 'Benvenuto, ' + nome + '!';
+      document.getElementById('success-sub').textContent = currentRole === 'student'
+        ? 'Account creato con successo! Cerca subito il tuo insegnante.'
+        : 'Profilo insegnante creato! Completa il tuo profilo per iniziare.';
+      document.getElementById('dash-btn-text').innerHTML = currentRole === 'student'
+        ? '<i class="ti ti-search" aria-hidden="true"></i> Cerca il tuo insegnante'
+        : '<i class="ti ti-user-edit" aria-hidden="true"></i> Completa il profilo';
+
+      startCountdown();
+    }, 800);
+    return;
+  }
+
+  /* ── MODALITA' REALE con Supabase ── */
+
   /* 1. Crea utente in Supabase Auth */
   const { data, error } = await sb.auth.signUp({
     email,
@@ -1046,7 +1076,7 @@ async function doRegister() {
       data: {
         nome,
         cognome,
-        full_name: `${nome} ${cognome}`,
+        full_name: nome + ' ' + cognome,
         role: currentRole,
       }
     }
@@ -1062,49 +1092,20 @@ async function doRegister() {
 
   /* 2. Inserisce profilo nella tabella profiles */
   if (userId) {
-    await sb.from('profiles').upsert({
-      id:       userId,
-      role:     currentRole,
-      nome,
-      cognome,
-    });
+    await sb.from('profiles').upsert({ id: userId, role: currentRole, nome, cognome });
 
     /* 3. Se insegnante, inserisce riga in teachers */
     if (currentRole === 'teacher') {
       const price = parseFloat(document.getElementById('reg-price')?.value) || null;
       const exp   = document.getElementById('reg-exp')?.value || null;
       await sb.from('teachers').upsert({
-        id:          userId,
-        materie:     selectedTags,
-        prezzo_ora:  price,
-        esperienza:  exp,
-        verified:    false,
+        id: userId, materie: selectedTags,
+        prezzo_ora: price, esperienza: exp, verified: false,
       });
     }
   }
 
   btn.classList.remove('loading');
-
-  /* MODALITA' DEMO */
-  if (!SUPABASE_READY) {
-    const nome = document.getElementById('reg-nome').value.trim();
-    localStorage.setItem('skolarix_demo', 'true');
-    localStorage.setItem('skolarix_user_email', document.getElementById('reg-email').value.trim());
-    document.getElementById('step-3').classList.remove('active');
-    document.getElementById('step-success').classList.add('active');
-    document.getElementById('sdot-3').classList.remove('active');
-    document.getElementById('sdot-3').classList.add('done');
-    document.getElementById('reg-progress').style.width = '100%';
-    document.getElementById('success-title').textContent = 'Benvenuto, ' + nome + '!';
-    document.getElementById('success-sub').textContent = currentRole === 'student'
-      ? 'Account demo creato. Integra Supabase per la versione reale.'
-      : 'Profilo insegnante demo creato. Integra Supabase per la versione reale.';
-    document.getElementById('dash-btn-text').innerHTML = currentRole === 'student'
-      ? '<i class="ti ti-search"></i> Cerca il tuo insegnante'
-      : '<i class="ti ti-user-edit"></i> Completa il profilo';
-    startCountdown();
-    return;
-  }
 
   /* 4. Mostra schermata di successo */
   document.getElementById('step-3').classList.remove('active');
