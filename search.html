@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skolarix — Cerca Insegnanti</title>
+<meta name="description" content="Cerca insegnanti qualificati per ogni materia. Filtra per prezzo, rating, disponibilità e modalità.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#08080c;--dark:#111118;--panel:#17171f;--panel2:#1d1d27;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--border3:rgba(255,255,255,0.22);
+  --purple:#8b7cf6;--purple2:#6d5ce8;--teal:#2dd4a0;--amber:#f5a623;--coral:#e8593c;
+  --text:#f0eff8;--muted:rgba(240,239,248,0.55);--muted2:rgba(240,239,248,0.28);
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:28px;
+  --sidebar:280px;--nav-h:64px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font-body);cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:rgba(139,124,246,.3);border-radius:3px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);display:flex;align-items:center;
+  padding:0 5%;gap:16px;
+  background:rgba(8,8,12,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand{font-family:var(--font-display);font-size:19px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:7px;margin-right:16px}
+.nav-brand span{color:var(--purple)}
+.nav-search{
+  flex:1;max-width:500px;
+  display:flex;align-items:center;gap:10px;
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:50px;padding:0 16px;height:40px;
+  transition:border-color .18s;
+}
+.nav-search:focus-within{border-color:var(--purple)}
+.nav-search input{flex:1;background:none;border:none;outline:none;font-family:var(--font-body);font-size:13px;color:var(--text)}
+.nav-search input::placeholder{color:var(--muted2)}
+.nav-search i{color:var(--muted2);font-size:16px}
+.nav-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-sm);padding:8px 16px;font-size:13px;font-weight:500;transition:all .18s;cursor:pointer;border:none}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple2)}
+
+/* ── LAYOUT ── */
+.page{display:flex;padding-top:var(--nav-h);min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--dark);border-right:1px solid var(--border);
+  padding:24px 20px;
+  position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));
+  overflow-y:auto;
+}
+.filter-section{margin-bottom:24px}
+.filter-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.filter-title button{font-size:11px;color:var(--purple);text-transform:none;letter-spacing:0;font-weight:500}
+
+/* materia pills */
+.materia-grid{display:flex;flex-wrap:wrap;gap:6px}
+.mat-pill{
+  padding:5px 11px;border-radius:50px;font-size:12px;font-weight:500;cursor:pointer;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);
+  transition:all .15s;
+}
+.mat-pill:hover{border-color:rgba(139,124,246,.5);color:var(--text)}
+.mat-pill.active{background:rgba(139,124,246,.15);border-color:var(--purple);color:var(--text)}
+
+/* price range */
+.range-wrap{padding:0 4px}
+.range-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+.range-row span{color:var(--text);font-weight:500}
+input[type=range]{
+  width:100%;-webkit-appearance:none;appearance:none;
+  height:3px;border-radius:2px;background:var(--border2);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--purple);cursor:pointer;border:2px solid var(--black);
+}
+
+/* rating stars filter */
+.stars-filter{display:flex;flex-direction:column;gap:7px}
+.star-opt{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 0}
+.star-opt input{accent-color:var(--purple);cursor:pointer}
+.star-opt .stars{color:var(--amber);font-size:13px}
+.star-opt span{font-size:12px;color:var(--muted)}
+
+/* toggle filters */
+.toggle-filter{display:flex;flex-direction:column;gap:8px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+.toggle-lbl{font-size:13px;color:var(--muted)}
+.toggle{
+  width:34px;height:19px;border-radius:10px;
+  background:var(--border2);position:relative;cursor:pointer;
+  transition:background .2s;flex-shrink:0;
+}
+.toggle.on{background:var(--purple)}
+.toggle::after{
+  content:'';position:absolute;
+  width:13px;height:13px;border-radius:50%;background:#fff;
+  top:3px;left:3px;transition:transform .2s;
+}
+.toggle.on::after{transform:translateX(15px)}
+
+/* availability days */
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.day-btn{
+  padding:6px 0;border-radius:6px;font-size:11px;font-weight:600;text-align:center;
+  border:1px solid var(--border2);color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.day-btn.active{background:rgba(139,124,246,.15);border-color:var(--purple);color:var(--text)}
+
+/* apply btn */
+.btn-apply{
+  width:100%;padding:11px;border-radius:var(--r-md);
+  background:var(--purple);color:#fff;font-weight:600;font-size:14px;
+  margin-top:8px;transition:all .18s;
+}
+.btn-apply:hover{background:var(--purple2)}
+.btn-reset{width:100%;padding:9px;border-radius:var(--r-md);font-size:13px;color:var(--muted);margin-top:6px;transition:color .15s}
+.btn-reset:hover{color:var(--text)}
+
+/* ── MAIN ── */
+.main{flex:1;padding:28px 32px;min-width:0}
+
+/* top bar */
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.results-count{font-size:14px;color:var(--muted);flex:1}
+.results-count strong{color:var(--text);font-weight:500}
+.sort-select{
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:var(--r-md);padding:8px 14px;font-family:var(--font-body);
+  font-size:13px;color:var(--text);outline:none;cursor:pointer;
+}
+.sort-select option{background:var(--panel)}
+.view-btns{display:flex;gap:4px}
+.view-btn{
+  width:34px;height:34px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border2);background:var(--panel);
+  color:var(--muted);font-size:16px;cursor:pointer;transition:all .15s;
+}
+.view-btn.active{background:rgba(139,124,246,.15);border-color:var(--purple);color:var(--purple)}
+
+/* active filters strip */
+.active-filters{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;min-height:0}
+.af-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(139,124,246,.12);border:1px solid rgba(139,124,246,.3);
+  border-radius:50px;padding:4px 11px;font-size:12px;color:#c4b9ff;
+}
+.af-tag button{color:inherit;opacity:.7;font-size:14px;display:flex;align-items:center}
+.af-tag button:hover{opacity:1}
+
+/* ── TEACHER GRID ── */
+.teacher-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.teacher-grid.list-view{grid-template-columns:1fr}
+
+/* CARD */
+.t-card{
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:var(--r-lg);padding:20px;
+  cursor:pointer;transition:all .2s;
+  animation:fadeIn .3s ease both;
+}
+.t-card:hover{border-color:rgba(139,124,246,.5);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.35)}
+
+/* list view card */
+.list-view .t-card{display:flex;gap:18px;align-items:flex-start;padding:18px 22px}
+.list-view .t-card-body{flex:1;min-width:0}
+.list-view .t-card-right{flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+
+.t-av{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:16px;font-weight:700;
+  margin-bottom:12px;
+}
+.list-view .t-av{margin-bottom:0}
+
+.t-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.t-name{font-family:var(--font-display);font-size:15px;font-weight:700;line-height:1.2}
+.t-subject{font-size:12px;color:var(--muted);margin-top:2px}
+.t-verified{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.25);
+  color:var(--teal);border-radius:50px;padding:2px 8px;font-size:11px;font-weight:500;
+  flex-shrink:0;
+}
+.t-stars{color:var(--amber);font-size:13px}
+.t-rating-row{display:flex;align-items:center;gap:6px;margin:8px 0}
+.t-reviews{font-size:12px;color:var(--muted)}
+.t-bio{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.t-tags{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.t-tag{
+  font-size:11px;padding:3px 9px;border-radius:6px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--muted);
+}
+.t-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.t-price{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--purple)}
+.t-price span{font-size:12px;font-weight:400;color:var(--muted)}
+.t-mode{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.btn-book{
+  padding:7px 16px;border-radius:var(--r-sm);
+  background:var(--purple);color:#fff;font-size:13px;font-weight:500;
+  transition:all .18s;
+}
+.btn-book:hover{background:var(--purple2)}
+.t-badge{
+  position:absolute;top:14px;right:14px;
+  font-size:10px;font-weight:600;padding:3px 8px;border-radius:50px;
+}
+.badge-top{background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+.badge-new{background:rgba(45,212,160,.12);color:var(--teal);border:1px solid rgba(45,212,160,.25)}
+.t-card-wrap{position:relative}
+
+/* online dot */
+.online-dot{width:9px;height:9px;border-radius:50%;background:var(--teal);border:2px solid var(--panel);position:absolute;bottom:2px;right:2px}
+
+/* skeleton */
+.skeleton{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;overflow:hidden}
+.skel-line{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--border2) 25%,rgba(255,255,255,.08) 50%,var(--border2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+.skel-circle{border-radius:50%;background:linear-gradient(90deg,var(--border2) 25%,rgba(255,255,255,.08) 50%,var(--border2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+
+/* empty state */
+.empty-state{text-align:center;padding:80px 20px;grid-column:1/-1}
+.empty-icon{font-size:48px;color:var(--muted2);margin-bottom:16px}
+.empty-title{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--muted);max-width:320px;margin:0 auto 24px}
+
+/* pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:36px;padding-bottom:40px}
+.pg-btn{
+  width:36px;height:36px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border2);background:var(--panel);
+  font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.pg-btn:hover{border-color:var(--border3);color:var(--text)}
+.pg-btn.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.pg-btn.disabled{opacity:.35;cursor:default}
+
+/* mobile sidebar toggle */
+.mobile-filter-btn{display:none;align-items:center;gap:7px;padding:9px 16px;border-radius:var(--r-md);border:1px solid var(--border2);background:var(--panel);font-size:13px;color:var(--muted)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150}
+.sidebar-overlay.open{display:block}
+
+/* animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* responsive */
+@media(max-width:960px){
+  .sidebar{position:fixed;left:-100%;top:var(--nav-h);height:calc(100vh - var(--nav-h));z-index:160;transition:left .3s;width:300px}
+  .sidebar.open{left:0}
+  .mobile-filter-btn{display:flex}
+  .main{padding:20px 16px}
+}
+@media(max-width:600px){
+  .nav-search{display:none}
+  .teacher-grid{grid-template-columns:1fr}
+  .topbar{gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand"><i class="ti ti-school" style="color:var(--purple)" aria-hidden="true"></i>Skola<span>rix</span></a>
+  <div class="nav-search">
+    <i class="ti ti-search" aria-hidden="true"></i>
+    <input type="text" id="nav-search-inp" placeholder="Cerca materia o insegnante…" oninput="handleNavSearch(this.value)">
+  </div>
+  <div class="nav-actions">
+    <a href="auth.html" class="btn btn-ghost">Accedi</a>
+    <a href="auth.html#register" class="btn btn-primary">Registrati</a>
+  </div>
+</nav>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" aria-label="Filtri di ricerca">
+
+    <div class="filter-section">
+      <div class="filter-title">
+        Materia
+        <button onclick="clearFilter('materia')">Cancella</button>
+      </div>
+      <div class="materia-grid" id="materia-grid"></div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Prezzo orario</div>
+      <div class="range-wrap">
+        <div class="range-row">
+          <span>€<span id="price-min-lbl">5</span></span>
+          <span>€<span id="price-max-lbl">100</span></span>
+        </div>
+        <input type="range" id="price-min" min="5" max="150" value="5" oninput="updatePriceMin(this.value)">
+        <div style="margin-top:8px">
+          <input type="range" id="price-max" min="5" max="150" value="100" oninput="updatePriceMax(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Rating minimo</div>
+      <div class="stars-filter">
+        <label class="star-opt"><input type="radio" name="rating" value="0" checked onchange="setRating(0)"><span class="stars">☆☆☆☆☆</span><span>Qualsiasi</span></label>
+        <label class="star-opt"><input type="radio" name="rating" value="3" onchange="setRating(3)"><span class="stars">★★★</span><span>3+ stelle</span></label>
+        <label class="star-opt"><input type="radio" name="rating" value="4" onchange="setRating(4)"><span class="stars">★★★★</span><span>4+ stelle</span></label>
+        <label class="star-opt"><input type="radio" name="rating" value="4.5" onchange="setRating(4.5)"><span class="stars">★★★★½</span><span>4.5+ stelle</span></label>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Modalità</div>
+      <div class="toggle-filter">
+        <div class="toggle-row">
+          <span class="toggle-lbl"><i class="ti ti-wifi" aria-hidden="true"></i> Online</span>
+          <div class="toggle on" id="tog-online" onclick="toggleFilter('online')" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-lbl"><i class="ti ti-map-pin" aria-hidden="true"></i> In presenza</span>
+          <div class="toggle on" id="tog-presence" onclick="toggleFilter('presence')" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-lbl"><i class="ti ti-shield-check" aria-hidden="true"></i> Solo verificati</span>
+          <div class="toggle" id="tog-verified" onclick="toggleFilter('verified')" role="switch" aria-checked="false" tabindex="0"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-lbl"><i class="ti ti-circle-filled" style="color:var(--teal);font-size:10px" aria-hidden="true"></i> Online adesso</span>
+          <div class="toggle" id="tog-now" onclick="toggleFilter('now')" role="switch" aria-checked="false" tabindex="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">
+        Disponibilità
+        <button onclick="clearFilter('days')">Cancella</button>
+      </div>
+      <div class="days-grid" id="days-grid">
+        <div class="day-btn" data-day="Lun" onclick="toggleDay(this)">Lun</div>
+        <div class="day-btn" data-day="Mar" onclick="toggleDay(this)">Mar</div>
+        <div class="day-btn" data-day="Mer" onclick="toggleDay(this)">Mer</div>
+        <div class="day-btn" data-day="Gio" onclick="toggleDay(this)">Gio</div>
+        <div class="day-btn" data-day="Ven" onclick="toggleDay(this)">Ven</div>
+        <div class="day-btn" data-day="Sab" onclick="toggleDay(this)">Sab</div>
+        <div class="day-btn" data-day="Dom" onclick="toggleDay(this)">Dom</div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <div class="filter-title">Lingua insegnamento</div>
+      <div class="materia-grid">
+        <div class="mat-pill active" data-lang="it" onclick="toggleLang(this)">🇮🇹 Italiano</div>
+        <div class="mat-pill" data-lang="en" onclick="toggleLang(this)">🇬🇧 Inglese</div>
+        <div class="mat-pill" data-lang="fr" onclick="toggleLang(this)">🇫🇷 Francese</div>
+        <div class="mat-pill" data-lang="es" onclick="toggleLang(this)">🇪🇸 Spagnolo</div>
+      </div>
+    </div>
+
+    <button class="btn-apply" onclick="applyFilters()"><i class="ti ti-filter" aria-hidden="true"></i> Applica filtri</button>
+    <button class="btn-reset" onclick="resetFilters()">Reimposta tutto</button>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- Mobile filter button -->
+    <button class="mobile-filter-btn" onclick="openSidebar()" style="margin-bottom:16px">
+      <i class="ti ti-adjustments-horizontal" aria-hidden="true"></i> Filtri
+      <span id="filter-count-badge" style="background:var(--purple);color:#fff;border-radius:50%;width:18px;height:18px;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700">0</span>
+    </button>
+
+    <!-- Active filter tags -->
+    <div class="active-filters" id="active-filters"></div>
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="results-count">Trovati <strong id="result-count">0</strong> insegnanti</div>
+      <select class="sort-select" id="sort-select" onchange="sortResults(this.value)">
+        <option value="relevance">Più rilevanti</option>
+        <option value="rating">Rating più alto</option>
+        <option value="price-asc">Prezzo crescente</option>
+        <option value="price-desc">Prezzo decrescente</option>
+        <option value="reviews">Più recensioni</option>
+        <option value="new">Nuovi arrivi</option>
+      </select>
+      <div class="view-btns">
+        <button class="view-btn active" id="vbtn-grid" onclick="setView('grid')" title="Griglia" aria-label="Vista griglia"><i class="ti ti-layout-grid" aria-hidden="true"></i></button>
+        <button class="view-btn" id="vbtn-list" onclick="setView('list')" title="Lista" aria-label="Vista lista"><i class="ti ti-list" aria-hidden="true"></i></button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="teacher-grid" id="teacher-grid"></div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+  </main>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA — 24 mock teachers
+══════════════════════════════════════════ */
+const TEACHERS = [
+  {id:1,name:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',textColor:'#c4b9ff',subjects:['Matematica','Fisica'],bio:'Professore di liceo scientifico con 8 anni di esperienza. Specializzato nella preparazione alla maturità e ai test universitari.',price:22,rating:5.0,reviews:128,verified:true,online:true,modes:['online','presenza'],days:['Lun','Mar','Mer','Gio','Ven'],badge:'top',lang:'it'},
+  {id:2,name:'Sofia Bianchi',initials:'SB',color:'rgba(45,212,160,.2)',textColor:'#5dcaa5',subjects:['Inglese','Francese'],bio:'Madrelingua certificata Cambridge. Lezioni per tutti i livelli, dal biennio alla laurea magistrale.',price:18,rating:5.0,reviews:97,verified:true,online:true,modes:['online'],days:['Lun','Mer','Ven','Sab'],badge:'',lang:'it'},
+  {id:3,name:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',textColor:'#85b7eb',subjects:['Coding','Python','JavaScript'],bio:'Ingegnere informatico senior. Insegno da zero a livello avanzato. Specializzato in algoritmi e strutture dati.',price:28,rating:4.7,reviews:64,verified:true,online:true,modes:['online'],days:['Mar','Gio','Sab','Dom'],badge:'',lang:'it'},
+  {id:4,name:'Giulia Ferrari',initials:'GF',color:'rgba(245,166,35,.2)',textColor:'#f5a623',subjects:['Latino','Greco','Italiano'],bio:'Laureata in Lettere Classiche alla Sapienza. Specializzata nel liceo classico e nella traduzione di testi antichi.',price:20,rating:5.0,reviews:84,verified:true,online:false,modes:['presenza','online'],days:['Lun','Mar','Gio','Ven'],badge:'top',lang:'it'},
+  {id:5,name:'Andrea Conti',initials:'AC',color:'rgba(212,83,126,.2)',textColor:'#ed93b1',subjects:['Economia','Ragioneria','Diritto'],bio:'Dottore commercialista con 12 anni di esperienza. Insegno per istituti tecnici commerciali e corsi universitari.',price:24,rating:4.6,reviews:51,verified:true,online:true,modes:['online','presenza'],days:['Mer','Gio','Ven'],badge:'',lang:'it'},
+  {id:6,name:'Elena Romano',initials:'ER',color:'rgba(99,153,34,.2)',textColor:'#97c459',subjects:['Biologia','Chimica','Scienze'],bio:'Biologa con dottorato. Preparo agli esami di ammissione a medicina, farmacia e biotecnologie.',price:25,rating:4.9,reviews:73,verified:true,online:true,modes:['online'],days:['Lun','Mar','Mer','Sab'],badge:'',lang:'it'},
+  {id:7,name:'Roberto Esposito',initials:'RE',color:'rgba(232,89,60,.2)',textColor:'#f0997b',subjects:['Storia','Filosofia','Geografia'],bio:'Ricercatore universitario in storia contemporanea. Lezioni dinamiche con materiali originali e approfondimenti.',price:19,rating:4.5,reviews:42,verified:true,online:true,modes:['online','presenza'],days:['Mar','Gio','Sab'],badge:'new',lang:'it'},
+  {id:8,name:'Francesca Marino',initials:'FM',color:'rgba(139,124,246,.18)',textColor:'#afa9ec',subjects:['Matematica','Statistica'],bio:'Ingegnera matematica, insegno con metodo Montessori adattato. Recupero scolastico e preparazione test.',price:21,rating:4.8,reviews:59,verified:true,online:true,modes:['online'],days:['Lun','Mer','Ven','Dom'],badge:'',lang:'it'},
+  {id:9,name:'Davide Costa',initials:'DC',color:'rgba(55,138,221,.18)',textColor:'#378add',subjects:['Fisica','Chimica'],bio:'Dottorando in fisica teorica. Lezioni pratiche con esperimenti virtuali e simulazioni interattive.',price:23,rating:4.7,reviews:38,verified:false,online:true,modes:['online'],days:['Lun','Gio','Sab'],badge:'new',lang:'it'},
+  {id:10,name:'Valentina Russo',initials:'VR',color:'rgba(212,83,126,.18)',textColor:'#d4537e',subjects:['Inglese','Spagnolo','Tedesco'],bio:'Traduttrice professionista, madrelingua in inglese. Certificazioni Cambridge, IELTS e TOEFL.',price:16,rating:4.9,reviews:112,verified:true,online:true,modes:['online'],days:['Lun','Mar','Mer','Gio','Ven'],badge:'top',lang:'it'},
+  {id:11,name:'Giuseppe Lombardi',initials:'GL',color:'rgba(99,153,34,.18)',textColor:'#639922',subjects:['Informatica','Robotica','AI'],bio:'CTO di startup tech, insegno intelligenza artificiale applicata, robotica e pensiero computazionale.',price:35,rating:4.8,reviews:29,verified:true,online:true,modes:['online'],days:['Sab','Dom'],badge:'new',lang:'it'},
+  {id:12,name:'Chiara Moretti',initials:'CM',color:'rgba(245,166,35,.18)',textColor:'#ba7517',subjects:['Arte','Storia dell\'arte'],bio:'Storica dell\'arte con esperienza in musei e gallerie. Preparo alla maturità e ai corsi universitari di arte.',price:17,rating:4.6,reviews:44,verified:true,online:true,modes:['online','presenza'],days:['Mer','Ven','Sab'],badge:'',lang:'it'},
+  {id:13,name:'Alessandro Ricci',initials:'AR',color:'rgba(139,124,246,.15)',textColor:'#8b7cf6',subjects:['Matematica','Fisica','Chimica'],bio:'Tecnico di laboratorio scientifico. Specializzato in recupero scolastico per studenti con difficoltà di apprendimento.',price:15,rating:4.3,reviews:67,verified:false,online:true,modes:['online','presenza'],days:['Lun','Mar','Mer'],badge:'',lang:'it'},
+  {id:14,name:'Paola Gallo',initials:'PG',color:'rgba(45,212,160,.15)',textColor:'#2dd4a0',subjects:['Italiano','Latino','Storia'],bio:'Docente di liceo classico con 15 anni di cattedra. Metodo socratico, analisi del testo e retorica.',price:22,rating:4.9,reviews:91,verified:true,online:false,modes:['presenza'],days:['Lun','Mer','Ven'],badge:'top',lang:'it'},
+  {id:15,name:'Matteo Bruno',initials:'MB',color:'rgba(232,89,60,.15)',textColor:'#e8593c',subjects:['Musica','Teoria musicale'],bio:'Pianista concertista e docente al conservatorio. Lezioni di teoria, solfeggio e storia della musica.',price:30,rating:4.8,reviews:36,verified:true,online:true,modes:['online','presenza'],days:['Mar','Gio'],badge:'',lang:'it'},
+  {id:16,name:'Sara Fontana',initials:'SF',color:'rgba(55,138,221,.15)',textColor:'#185fa5',subjects:['Psicologia','Scienze umane'],bio:'Psicologa clinica e docente universitaria. Lezioni di psicologia, pedagogia e metodologia della ricerca.',price:32,rating:4.7,reviews:22,verified:true,online:true,modes:['online'],days:['Lun','Mer','Ven','Sab'],badge:'new',lang:'it'},
+  {id:17,name:'Carlo De Luca',initials:'CD',color:'rgba(212,83,126,.15)',textColor:'#993556',subjects:['Diritto','Economia politica'],bio:'Avvocato e docente universitario. Specializzato in diritto commerciale, diritto internazionale e procedura civile.',price:40,rating:4.5,reviews:18,verified:true,online:true,modes:['online'],days:['Gio','Ven','Sab'],badge:'',lang:'it'},
+  {id:18,name:'Monica Serra',initials:'MS',color:'rgba(99,153,34,.15)',textColor:'#3b6d11',subjects:['Francese','Spagnolo'],bio:'Insegnante madrelingua francese, bilingue italiano-francese. Preparo alle certificazioni DELF e DALF.',price:19,rating:4.8,reviews:55,verified:true,online:true,modes:['online'],days:['Lun','Mar','Mer','Gio'],badge:'',lang:'it'},
+  {id:19,name:'Stefano Pellegrini',initials:'SP',color:'rgba(139,124,246,.12)',textColor:'#534ab7',subjects:['Matematica','Geometria'],bio:'Professore universitario di analisi matematica. Lezioni strutturate per ingegneria, economia e scienze.',price:45,rating:4.9,reviews:47,verified:true,online:true,modes:['online'],days:['Mar','Gio','Sab'],badge:'top',lang:'it'},
+  {id:20,name:'Laura Cattaneo',initials:'LC',color:'rgba(245,166,35,.12)',textColor:'#ef9f27',subjects:['Chimica','Biologia','Scienze'],bio:'Farmacista e docente. Preparo ai test di ammissione a medicina, farmacia e biotecnologie con simulazioni.',price:27,rating:4.6,reviews:33,verified:true,online:true,modes:['online','presenza'],days:['Lun','Mer','Ven'],badge:'',lang:'it'},
+  {id:21,name:'Federico Marini',initials:'FM2',color:'rgba(45,212,160,.12)',textColor:'#0f6e56',subjects:['Coding','Web development'],bio:'Full-stack developer con 10 anni di esperienza. Insegno HTML, CSS, React, Node.js e database.',price:33,rating:4.7,reviews:41,verified:true,online:true,modes:['online'],days:['Sab','Dom'],badge:'new',lang:'it'},
+  {id:22,name:'Anna Palumbo',initials:'AP',color:'rgba(232,89,60,.12)',textColor:'#993c1d',subjects:['Inglese','Letteratura'],bio:'Professoressa di letteratura inglese e americana. Preparazione Cambridge, IELTS e supporto per l\'università.',price:20,rating:4.8,reviews:76,verified:true,online:true,modes:['online'],days:['Lun','Mar','Gio','Ven'],badge:'',lang:'it'},
+  {id:23,name:'Pietro Galli',initials:'PG2',color:'rgba(55,138,221,.12)',textColor:'#0c447c',subjects:['Fisica','Astronomia'],bio:'Astrofisico e divulgatore scientifico. Lezioni di fisica moderna, meccanica quantistica e astronomia.',price:28,rating:4.6,reviews:25,verified:false,online:true,modes:['online'],days:['Gio','Sab','Dom'],badge:'new',lang:'it'},
+  {id:24,name:'Irene Ferretti',initials:'IF',color:'rgba(212,83,126,.12)',textColor:'#d4537e',subjects:['Tedesco','Inglese'],bio:'Insegnante di lingua tedesca certificata Goethe-Institut. Madrelingua, lezioni per tutti i livelli A1-C2.',price:22,rating:4.9,reviews:38,verified:true,online:true,modes:['online'],days:['Lun','Mer','Ven','Sab'],badge:'',lang:'it'},
+];
+
+const MATERIE = ['Matematica','Fisica','Chimica','Biologia','Inglese','Italiano','Latino','Greco','Storia','Filosofia','Informatica','Coding','Economia','Diritto','Scienze','Arte','Musica','Francese','Spagnolo','Tedesco','Python','Psicologia'];
+
+/* ══ STATE ══ */
+let state = {
+  q: '',
+  materie: [],
+  priceMin: 5,
+  priceMax: 100,
+  rating: 0,
+  online: true,
+  presence: true,
+  verified: false,
+  now: false,
+  days: [],
+  page: 1,
+  perPage: 12,
+  view: 'grid',
+  sort: 'relevance',
+};
+
+/* ══ INIT ══ */
+function init() {
+  // build materia pills
+  const grid = document.getElementById('materia-grid');
+  MATERIE.forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'mat-pill';
+    el.textContent = m;
+    el.onclick = () => toggleMateria(el, m);
+    grid.appendChild(el);
+  });
+
+  // check URL params
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('q')) {
+    state.q = params.get('q');
+    document.getElementById('nav-search-inp').value = state.q;
+  }
+  if (params.get('materia')) {
+    state.materie = [params.get('materia')];
+    document.querySelectorAll('.mat-pill').forEach(p => {
+      if (p.textContent === params.get('materia')) p.classList.add('active');
+    });
+  }
+
+  render();
+}
+
+/* ══ FILTER LOGIC ══ */
+function getFiltered() {
+  let r = [...TEACHERS];
+
+  if (state.q) {
+    const q = state.q.toLowerCase();
+    r = r.filter(t =>
+      t.name.toLowerCase().includes(q) ||
+      t.subjects.some(s => s.toLowerCase().includes(q)) ||
+      t.bio.toLowerCase().includes(q)
+    );
+  }
+
+  if (state.materie.length) {
+    r = r.filter(t => state.materie.some(m => t.subjects.some(s => s.toLowerCase().includes(m.toLowerCase()))));
+  }
+
+  r = r.filter(t => t.price >= state.priceMin && t.price <= state.priceMax);
+
+  if (state.rating > 0) r = r.filter(t => t.rating >= state.rating);
+  if (!state.online)   r = r.filter(t => t.modes.includes('presenza'));
+  if (!state.presence) r = r.filter(t => t.modes.includes('online'));
+  if (state.verified)  r = r.filter(t => t.verified);
+  if (state.now)       r = r.filter(t => t.online);
+  if (state.days.length) r = r.filter(t => state.days.some(d => t.days.includes(d)));
+
+  // sort
+  switch(state.sort) {
+    case 'rating':     r.sort((a,b) => b.rating - a.rating); break;
+    case 'price-asc':  r.sort((a,b) => a.price - b.price); break;
+    case 'price-desc': r.sort((a,b) => b.price - a.price); break;
+    case 'reviews':    r.sort((a,b) => b.reviews - a.reviews); break;
+    case 'new':        r.sort((a,b) => (b.badge==='new'?1:0) - (a.badge==='new'?1:0)); break;
+  }
+
+  return r;
+}
+
+/* ══ RENDER ══ */
+function render() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const start = (state.page - 1) * state.perPage;
+  const paged = filtered.slice(start, start + state.perPage);
+
+  document.getElementById('result-count').textContent = total;
+
+  // active filter tags
+  renderActiveTags();
+
+  const grid = document.getElementById('teacher-grid');
+  grid.className = 'teacher-grid' + (state.view === 'list' ? ' list-view' : '');
+
+  if (!paged.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon"><i class="ti ti-search-off" aria-hidden="true"></i></div>
+        <div class="empty-title">Nessun insegnante trovato</div>
+        <div class="empty-sub">Prova a modificare i filtri o cerca una materia diversa</div>
+        <button class="btn btn-primary" onclick="resetFilters()"><i class="ti ti-refresh" aria-hidden="true"></i> Reimposta filtri</button>
+      </div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  grid.innerHTML = paged.map(t => renderCard(t)).join('');
+  renderPagination(total);
+}
+
+function renderCard(t) {
+  const stars = '★'.repeat(Math.floor(t.rating)) + (t.rating % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.ceil(t.rating));
+  const badgeHtml = t.badge === 'top'
+    ? `<span class="t-badge badge-top"><i class="ti ti-trophy" aria-hidden="true"></i> Top</span>`
+    : t.badge === 'new'
+    ? `<span class="t-badge badge-new"><i class="ti ti-sparkles" aria-hidden="true"></i> Nuovo</span>`
+    : '';
+  const onlineDot = t.online ? `<div class="online-dot" title="Online adesso"></div>` : '';
+  const modeIcons = t.modes.map(m => m === 'online'
+    ? `<i class="ti ti-wifi" aria-hidden="true" title="Online"></i>`
+    : `<i class="ti ti-map-pin" aria-hidden="true" title="In presenza"></i>`).join(' ');
+
+  if (state.view === 'list') {
+    return `
+    <div class="t-card-wrap">
+      <div class="t-card" onclick="goToProfile(${t.id})">
+        <div style="position:relative;display:inline-block">
+          <div class="t-av" style="background:${t.color};color:${t.textColor}">${t.initials}</div>
+          ${onlineDot}
+        </div>
+        <div class="t-card-body">
+          <div class="t-header">
+            <div>
+              <div class="t-name">${t.name}</div>
+              <div class="t-subject">${t.subjects.join(' · ')}</div>
+            </div>
+          </div>
+          ${t.verified ? `<div class="t-verified" style="margin:6px 0"><i class="ti ti-shield-check" aria-hidden="true"></i> Verificato</div>` : ''}
+          <div class="t-rating-row">
+            <span class="t-stars">${stars}</span>
+            <span style="font-size:13px;font-weight:500">${t.rating.toFixed(1)}</span>
+            <span class="t-reviews">(${t.reviews} rec.)</span>
+            <span class="t-mode" style="margin-left:10px">${modeIcons}</span>
+          </div>
+          <div class="t-bio">${t.bio}</div>
+          <div class="t-tags">${t.subjects.map(s=>`<span class="t-tag">${s}</span>`).join('')}</div>
+        </div>
+        <div class="t-card-right">
+          ${badgeHtml}
+          <div class="t-price">€${t.price} <span>/ ora</span></div>
+          <button class="btn-book" onclick="event.stopPropagation();bookTeacher(${t.id})"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Prenota</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `
+  <div class="t-card-wrap">
+    <div class="t-card" onclick="goToProfile(${t.id})">
+      ${badgeHtml}
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="position:relative;display:inline-block">
+          <div class="t-av" style="background:${t.color};color:${t.textColor};margin-bottom:0">${t.initials}</div>
+          ${onlineDot}
+        </div>
+        <div>
+          <div class="t-name">${t.name}</div>
+          <div class="t-subject">${t.subjects.join(' · ')}</div>
+        </div>
+      </div>
+      ${t.verified ? `<div class="t-verified" style="margin-bottom:8px"><i class="ti ti-shield-check" aria-hidden="true"></i> Verificato</div>` : ''}
+      <div class="t-rating-row">
+        <span class="t-stars">${stars.substring(0,5)}</span>
+        <span style="font-size:13px;font-weight:500">${t.rating.toFixed(1)}</span>
+        <span class="t-reviews">(${t.reviews})</span>
+      </div>
+      <div class="t-bio">${t.bio}</div>
+      <div class="t-tags">${t.subjects.map(s=>`<span class="t-tag">${s}</span>`).join('')}</div>
+      <div class="t-footer">
+        <div>
+          <div class="t-price">€${t.price} <span>/ ora</span></div>
+          <div class="t-mode">${modeIcons} ${t.modes.join(' + ')}</div>
+        </div>
+        <button class="btn-book" onclick="event.stopPropagation();bookTeacher(${t.id})">Prenota</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / state.perPage);
+  if (pages <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
+  let html = `<button class="pg-btn ${state.page===1?'disabled':''}" onclick="changePage(${state.page-1})"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>`;
+  for (let i = 1; i <= pages; i++) {
+    if (i === 1 || i === pages || Math.abs(i - state.page) <= 1) {
+      html += `<button class="pg-btn ${i===state.page?'active':''}" onclick="changePage(${i})">${i}</button>`;
+    } else if (Math.abs(i - state.page) === 2) {
+      html += `<span style="color:var(--muted2);padding:0 4px">…</span>`;
+    }
+  }
+  html += `<button class="pg-btn ${state.page===pages?'disabled':''}" onclick="changePage(${state.page+1})"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>`;
+  document.getElementById('pagination').innerHTML = html;
+}
+
+function renderActiveTags() {
+  let tags = [];
+  if (state.q) tags.push({label:`"${state.q}"`, clear:()=>{state.q='';document.getElementById('nav-search-inp').value=''}});
+  state.materie.forEach(m => tags.push({label:m, clear:()=>{state.materie=state.materie.filter(x=>x!==m);document.querySelectorAll('.mat-pill').forEach(p=>{if(p.textContent===m)p.classList.remove('active')})}}));
+  if (state.priceMin > 5 || state.priceMax < 100) tags.push({label:`€${state.priceMin}–€${state.priceMax}`, clear:()=>{state.priceMin=5;state.priceMax=100;document.getElementById('price-min').value=5;document.getElementById('price-max').value=100;document.getElementById('price-min-lbl').textContent=5;document.getElementById('price-max-lbl').textContent=100}});
+  if (state.rating > 0) tags.push({label:`${state.rating}+ stelle`, clear:()=>{state.rating=0;document.querySelector('input[name=rating][value="0"]').checked=true}});
+  if (state.verified) tags.push({label:'Solo verificati', clear:()=>{state.verified=false;document.getElementById('tog-verified').classList.remove('on')}});
+  if (state.now) tags.push({label:'Online adesso', clear:()=>{state.now=false;document.getElementById('tog-now').classList.remove('on')}});
+  state.days.forEach(d => tags.push({label:d, clear:()=>{state.days=state.days.filter(x=>x!==d);document.querySelectorAll('.day-btn').forEach(b=>{if(b.dataset.day===d)b.classList.remove('active')})}}));
+
+  const cont = document.getElementById('active-filters');
+  if (!tags.length) { cont.innerHTML = ''; return; }
+  cont.innerHTML = tags.map((t,i) => `
+    <div class="af-tag">
+      ${t.label}
+      <button onclick="clearTag(${i})" aria-label="Rimuovi filtro ${t.label}"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>`).join('') +
+    `<button onclick="resetFilters()" style="font-size:12px;color:var(--muted2);padding:4px 8px;border-radius:50px;border:1px solid var(--border2)">Cancella tutto</button>`;
+
+  // store clear functions
+  cont._clearFns = tags.map(t => t.clear);
+
+  // update mobile badge
+  const badge = document.getElementById('filter-count-badge');
+  badge.textContent = tags.length;
+  badge.style.display = tags.length ? 'flex' : 'none';
+}
+
+function clearTag(i) {
+  const cont = document.getElementById('active-filters');
+  if (cont._clearFns && cont._clearFns[i]) { cont._clearFns[i](); state.page=1; render(); }
+}
+
+/* ══ FILTER CONTROLS ══ */
+function toggleMateria(el, m) {
+  el.classList.toggle('active');
+  if (state.materie.includes(m)) state.materie = state.materie.filter(x => x !== m);
+  else state.materie.push(m);
+  state.page = 1; render();
+}
+
+function updatePriceMin(v) {
+  v = parseInt(v);
+  if (v >= state.priceMax) v = state.priceMax - 5;
+  state.priceMin = v;
+  document.getElementById('price-min-lbl').textContent = v;
+  document.getElementById('price-min').value = v;
+  state.page = 1; render();
+}
+
+function updatePriceMax(v) {
+  v = parseInt(v);
+  if (v <= state.priceMin) v = state.priceMin + 5;
+  state.priceMax = v;
+  document.getElementById('price-max-lbl').textContent = v;
+  document.getElementById('price-max').value = v;
+  state.page = 1; render();
+}
+
+function setRating(v) { state.rating = parseFloat(v); state.page = 1; render(); }
+
+function toggleFilter(key) {
+  state[key] = !state[key];
+  const tog = document.getElementById('tog-' + key);
+  tog.classList.toggle('on', state[key]);
+  tog.setAttribute('aria-checked', state[key]);
+  state.page = 1; render();
+}
+
+function toggleDay(el) {
+  const d = el.dataset.day;
+  el.classList.toggle('active');
+  if (state.days.includes(d)) state.days = state.days.filter(x => x !== d);
+  else state.days.push(d);
+  state.page = 1; render();
+}
+
+function toggleLang(el) { el.classList.toggle('active'); state.page = 1; render(); }
+function clearFilter(type) {
+  if (type === 'materia') { state.materie = []; document.querySelectorAll('.mat-pill').forEach(p => p.classList.remove('active')); }
+  if (type === 'days') { state.days = []; document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active')); }
+  state.page = 1; render();
+}
+
+function applyFilters() { state.page = 1; render(); closeSidebar(); }
+
+function resetFilters() {
+  state = {...state, q:'', materie:[], priceMin:5, priceMax:100, rating:0, online:true, presence:true, verified:false, now:false, days:[], page:1};
+  document.querySelectorAll('.mat-pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('price-min').value = 5; document.getElementById('price-min-lbl').textContent = 5;
+  document.getElementById('price-max').value = 100; document.getElementById('price-max-lbl').textContent = 100;
+  document.querySelector('input[name=rating][value="0"]').checked = true;
+  ['online','presence'].forEach(k => document.getElementById('tog-'+k).classList.add('on'));
+  ['verified','now'].forEach(k => document.getElementById('tog-'+k).classList.remove('on'));
+  document.getElementById('nav-search-inp').value = '';
+  render();
+}
+
+function handleNavSearch(v) { state.q = v; state.page = 1; render(); }
+function sortResults(v) { state.sort = v; state.page = 1; render(); }
+function setView(v) {
+  state.view = v;
+  document.getElementById('vbtn-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('vbtn-list').classList.toggle('active', v === 'list');
+  render();
+}
+function changePage(p) {
+  const total = getFiltered().length;
+  const pages = Math.ceil(total / state.perPage);
+  if (p < 1 || p > pages) return;
+  state.page = p;
+  render();
+  window.scrollTo({top:64,behavior:'smooth'});
+}
+
+/* ══ ACTIONS ══ */
+function goToProfile(id) { window.location.href = `teacher.html?id=${id}`; }
+function bookTeacher(id) { window.location.href = `auth.html#register`; }
+
+/* ══ MOBILE SIDEBAR ══ */
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+init();
+</script>
+</body>
+</html>
