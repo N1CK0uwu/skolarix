@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skolarix — Profilo Insegnante</title>
+<meta name="description" content="Prenota una lezione con i migliori insegnanti di Skolarix. Profilo completo, recensioni verificate e calendario disponibilità.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#08080c;--dark:#111118;--panel:#17171f;--panel2:#1d1d27;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--border3:rgba(255,255,255,0.22);
+  --purple:#8b7cf6;--purple2:#6d5ce8;--teal:#2dd4a0;--amber:#f5a623;--coral:#e8593c;
+  --text:#f0eff8;--muted:rgba(240,239,248,0.55);--muted2:rgba(240,239,248,0.28);
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:28px;--nav-h:64px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font-body);cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:rgba(139,124,246,.3);border-radius:3px}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);display:flex;align-items:center;
+  padding:0 5%;gap:16px;
+  background:rgba(8,8,12,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.nav-brand{font-family:var(--font-display);font-size:19px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:7px}
+.nav-brand span{color:var(--purple)}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-left:8px;transition:color .15s}
+.nav-back:hover{color:var(--text)}
+.nav-actions{margin-left:auto;display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-sm);padding:8px 16px;font-size:13px;font-weight:500;transition:all .18s;cursor:pointer;border:none}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple2);transform:translateY(-1px)}
+.btn-teal{background:var(--teal);color:var(--black);font-weight:600}
+.btn-teal:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-lg{padding:13px 28px;font-size:15px;border-radius:var(--r-md)}
+
+/* ── LAYOUT ── */
+.page{max-width:1160px;margin:0 auto;padding:calc(var(--nav-h) + 32px) 24px 60px}
+
+/* ── HERO HEADER ── */
+.profile-hero{
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:var(--r-xl);padding:32px;
+  margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.profile-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 0%,rgba(139,124,246,.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-inner{display:flex;gap:24px;align-items:flex-start;position:relative;z-index:1;flex-wrap:wrap}
+.avatar-wrap{position:relative;flex-shrink:0}
+.avatar{
+  width:96px;height:96px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:28px;font-weight:800;
+  border:3px solid rgba(139,124,246,.3);
+}
+.online-badge{
+  position:absolute;bottom:4px;right:4px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--teal);border:3px solid var(--panel);
+}
+.hero-info{flex:1;min-width:200px}
+.hero-name{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.hero-subtitle{font-size:14px;color:var(--muted);margin-bottom:12px}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:50px;font-size:12px;font-weight:500}
+.badge-verified{background:rgba(45,212,160,.12);border:1px solid rgba(45,212,160,.3);color:var(--teal)}
+.badge-top{background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:var(--amber)}
+.badge-exp{background:rgba(255,255,255,.07);border:1px solid var(--border2);color:var(--muted)}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap}
+.hstat{text-align:center}
+.hstat-n{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--text);line-height:1}
+.hstat-l{font-size:11px;color:var(--muted);margin-top:3px}
+.hero-cta{display:flex;flex-direction:column;gap:10px;min-width:180px}
+.price-block{text-align:center;padding:14px;background:rgba(139,124,246,.08);border:1px solid rgba(139,124,246,.2);border-radius:var(--r-md)}
+.price-num{font-family:var(--font-display);font-size:1.8rem;font-weight:800;color:var(--purple);line-height:1}
+.price-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.btn-book{
+  width:100%;padding:13px;border-radius:var(--r-md);
+  background:var(--purple);color:#fff;font-family:var(--font-display);
+  font-size:15px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .18s;
+}
+.btn-book:hover{background:var(--purple2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(139,124,246,.3)}
+.btn-chat{
+  width:100%;padding:11px;border-radius:var(--r-md);
+  background:rgba(255,255,255,.06);color:var(--text);
+  border:1px solid var(--border2);font-size:14px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .18s;
+}
+.btn-chat:hover{background:rgba(255,255,255,.1);border-color:var(--border3)}
+
+/* ── GRID LAYOUT ── */
+.content-grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
+.col-left{display:flex;flex-direction:column;gap:20px}
+.col-right{display:flex;flex-direction:column;gap:20px}
+
+/* ── CARD ── */
+.card{background:var(--panel);border:1px solid var(--border2);border-radius:var(--r-lg);padding:24px}
+.card-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--purple);font-size:18px}
+
+/* ── BIO ── */
+.bio-text{font-size:14px;color:var(--muted);line-height:1.75}
+.bio-text.collapsed{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.read-more{color:var(--purple);font-size:13px;font-weight:500;margin-top:8px;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+
+/* ── SUBJECTS ── */
+.subjects-grid{display:flex;flex-wrap:wrap;gap:8px}
+.subj-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 14px;border-radius:var(--r-md);
+  background:rgba(139,124,246,.08);border:1px solid rgba(139,124,246,.2);
+  font-size:13px;font-weight:500;color:var(--text);
+}
+.subj-chip i{color:var(--purple);font-size:16px}
+
+/* ── SKILLS ── */
+.skill-row{margin-bottom:14px}
+.skill-header{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.skill-name{font-weight:500}
+.skill-pct{color:var(--muted);font-size:12px}
+.skill-bar{height:4px;background:var(--border2);border-radius:2px;overflow:hidden}
+.skill-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--purple),var(--teal));transition:width 1s ease}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-month{font-family:var(--font-display);font-size:15px;font-weight:700}
+.cal-nav{display:flex;gap:6px}
+.cal-nav-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:var(--panel2);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .15s}
+.cal-nav-btn:hover{border-color:var(--border3);color:var(--text)}
+.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.cal-day-lbl{text-align:center;font-size:11px;font-weight:600;color:var(--muted2);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-cell{
+  aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:500;cursor:pointer;position:relative;
+  transition:all .15s;color:var(--muted2);
+}
+.cal-cell.other-month{opacity:.3;cursor:default}
+.cal-cell.available{color:var(--text);background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.2)}
+.cal-cell.available:hover{background:rgba(45,212,160,.18);border-color:var(--teal)}
+.cal-cell.selected{background:var(--purple)!important;border-color:var(--purple)!important;color:#fff!important}
+.cal-cell.today{border:1px solid rgba(139,124,246,.4)}
+.cal-cell.past{opacity:.3;cursor:not-allowed}
+.cal-legend{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.cal-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.cal-leg-dot{width:8px;height:8px;border-radius:2px}
+
+/* time slots */
+.slots-header{font-size:13px;font-weight:500;margin:16px 0 10px;color:var(--text)}
+.slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.slot-btn{
+  padding:9px 6px;border-radius:var(--r-sm);text-align:center;
+  border:1px solid var(--border2);background:var(--panel2);
+  font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;
+  transition:all .15s;
+}
+.slot-btn:hover{border-color:rgba(139,124,246,.4);color:var(--text)}
+.slot-btn.selected{background:rgba(139,124,246,.15);border-color:var(--purple);color:var(--text)}
+.slot-btn.booked{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.btn-confirm{
+  width:100%;padding:12px;border-radius:var(--r-md);
+  background:var(--teal);color:var(--black);
+  font-family:var(--font-display);font-size:14px;font-weight:700;
+  margin-top:14px;display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:all .18s;
+}
+.btn-confirm:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.btn-confirm:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ── REVIEWS ── */
+.rating-summary{display:flex;gap:20px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.big-rating{text-align:center}
+.big-num{font-family:var(--font-display);font-size:3rem;font-weight:800;line-height:1;color:var(--text)}
+.big-stars{color:var(--amber);font-size:18px;margin:4px 0}
+.big-lbl{font-size:12px;color:var(--muted)}
+.rating-bars{flex:1;min-width:180px}
+.rbar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.rbar-lbl{font-size:12px;color:var(--muted);width:16px;text-align:right;flex-shrink:0}
+.rbar-track{flex:1;height:5px;background:var(--border2);border-radius:3px;overflow:hidden}
+.rbar-fill{height:100%;background:var(--amber);border-radius:3px;transition:width 1s ease}
+.rbar-count{font-size:11px;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
+
+.review-list{display:flex;flex-direction:column;gap:16px}
+.review-item{padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--r-md)}
+.rev-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rev-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.rev-name{font-size:13px;font-weight:500}
+.rev-date{font-size:11px;color:var(--muted)}
+.rev-stars{color:var(--amber);font-size:13px;margin-left:auto}
+.rev-text{font-size:13px;color:var(--muted);line-height:1.65}
+.rev-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.rev-tag{font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(45,212,160,.08);color:var(--teal);border:1px solid rgba(45,212,160,.15)}
+.show-more-btn{width:100%;padding:10px;border-radius:var(--r-md);border:1px solid var(--border2);color:var(--muted);font-size:13px;margin-top:14px;transition:all .15s}
+.show-more-btn:hover{border-color:var(--border3);color:var(--text)}
+
+/* ── SIDEBAR CARD ── */
+.info-list{display:flex;flex-direction:column;gap:12px}
+.info-row{display:flex;align-items:flex-start;gap:12px}
+.info-icon{width:32px;height:32px;border-radius:8px;background:rgba(139,124,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--purple);font-size:16px}
+.info-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.info-value{font-size:13px;font-weight:500;color:var(--text)}
+
+/* ── SIMILAR ── */
+.similar-list{display:flex;flex-direction:column;gap:10px}
+.sim-card{display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;transition:all .15s}
+.sim-card:hover{border-color:var(--border2);transform:translateX(2px)}
+.sim-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;font-weight:700;flex-shrink:0}
+.sim-name{font-size:13px;font-weight:500}
+.sim-subject{font-size:11px;color:var(--muted)}
+.sim-price{font-size:13px;font-weight:600;color:var(--purple);margin-left:auto;flex-shrink:0}
+
+/* ── MODAL BOOKING ── */
+.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:var(--r-xl);padding:32px;width:100%;max-width:440px;transform:translateY(20px);transition:transform .25s;position:relative}
+.modal-backdrop.open .modal{transform:none}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;cursor:pointer}
+.modal-title{font-family:var(--font-display);font-size:20px;font-weight:800;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+.booking-summary{background:var(--panel2);border:1px solid var(--border2);border-radius:var(--r-md);padding:16px;margin-bottom:20px}
+.bs-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.bs-row:last-child{border:none;padding-top:10px;margin-top:6px;font-weight:600;font-size:15px}
+.bs-row span:first-child{color:var(--muted)}
+.bs-row span:last-child{color:var(--text)}
+.bs-row.total span:last-child{color:var(--purple);font-family:var(--font-display)}
+.payment-methods{display:flex;gap:8px;margin-bottom:20px}
+.pm-btn{flex:1;padding:10px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--panel2);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
+.pm-btn.active{border-color:var(--purple);background:rgba(139,124,246,.1);color:var(--text)}
+.btn-pay{width:100%;padding:14px;border-radius:var(--r-md);background:var(--purple);color:#fff;font-family:var(--font-display);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s}
+.btn-pay:hover{background:var(--purple2)}
+.secure-note{text-align:center;font-size:11px;color:var(--muted2);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--teal);color:var(--black);border-radius:var(--r-md);padding:12px 20px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:none;opacity:1}
+
+/* ── STICKY MOBILE CTA ── */
+.sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;padding:14px 20px;background:rgba(17,17,24,.95);backdrop-filter:blur(12px);border-top:1px solid var(--border2);gap:12px;align-items:center;justify-content:space-between}
+
+/* animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes countUp{from{opacity:0}to{opacity:1}}
+
+/* responsive */
+@media(max-width:900px){
+  .content-grid{grid-template-columns:1fr}
+  .col-right{order:-1}
+  .hero-cta{flex-direction:row;flex-wrap:wrap}
+  .hero-cta>*{flex:1;min-width:140px}
+  .sticky-cta{display:flex}
+  .page{padding-bottom:90px}
+}
+@media(max-width:600px){
+  .profile-hero{padding:20px}
+  .hero-inner{gap:16px}
+  .avatar{width:72px;height:72px;font-size:22px}
+  .hero-name{font-size:1.4rem}
+  .slots-grid{grid-template-columns:repeat(4,1fr)}
+  .page{padding:calc(var(--nav-h) + 20px) 14px 90px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand"><i class="ti ti-school" style="color:var(--purple)" aria-hidden="true"></i>Skola<span>rix</span></a>
+  <a href="search.html" class="nav-back"><i class="ti ti-arrow-left" aria-hidden="true"></i> Torna alla ricerca</a>
+  <div class="nav-actions">
+    <a href="auth.html" class="btn btn-ghost">Accedi</a>
+    <a href="auth.html#register" class="btn btn-primary">Registrati</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO HEADER -->
+  <div class="profile-hero" id="profileHero">
+    <div class="hero-inner">
+      <div class="avatar-wrap">
+        <div class="avatar" id="heroAvatar" style="background:rgba(139,124,246,.2);color:#c4b9ff">MR</div>
+        <div class="online-badge" title="Online adesso"></div>
+      </div>
+      <div class="hero-info">
+        <div class="hero-name" id="heroName">Marco Rossi</div>
+        <div class="hero-subtitle" id="heroSubtitle">Insegnante di Matematica e Fisica · Roma, Italia</div>
+        <div class="hero-badges">
+          <span class="badge badge-verified"><i class="ti ti-shield-check" aria-hidden="true"></i> Verificato</span>
+          <span class="badge badge-top"><i class="ti ti-trophy" aria-hidden="true"></i> Top Insegnante</span>
+          <span class="badge badge-exp"><i class="ti ti-clock" aria-hidden="true"></i> 8 anni di esperienza</span>
+          <span class="badge badge-exp"><i class="ti ti-circle-filled" style="color:var(--teal);font-size:8px" aria-hidden="true"></i> Online adesso</span>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat">
+            <div class="hstat-n" id="statRating">5.0</div>
+            <div class="hstat-l">Rating ⭐</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n" id="statReviews">128</div>
+            <div class="hstat-l">Recensioni</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n" id="statLessons">340+</div>
+            <div class="hstat-l">Lezioni</div>
+          </div>
+          <div class="hstat">
+            <div class="hstat-n" id="statResponse">< 1h</div>
+            <div class="hstat-l">Risposta</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <div class="price-block">
+          <div class="price-num" id="heroPrice">€22</div>
+          <div class="price-sub">per ora · IVA inclusa</div>
+        </div>
+        <button class="btn-book" onclick="openBooking()">
+          <i class="ti ti-calendar-plus" aria-hidden="true"></i> Prenota lezione
+        </button>
+        <button class="btn-chat" onclick="goToChat()">
+          <i class="ti ti-message" aria-hidden="true"></i> Invia messaggio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+
+    <!-- LEFT COL -->
+    <div class="col-left">
+
+      <!-- BIO -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-user" aria-hidden="true"></i> Su di me</div>
+        <div class="bio-text collapsed" id="bioText">
+          Ciao! Sono Marco, insegnante di matematica e fisica con 8 anni di esperienza nel liceo scientifico e nel tutoraggio privato. Mi sono laureato in Fisica alla Sapienza di Roma con 110/110 e ho conseguito il TFA abilitante.
+          <br><br>
+          Il mio metodo di insegnamento si basa sulla comprensione profonda dei concetti piuttosto che sulla memorizzazione meccanica. Ogni studente ha un ritmo diverso, e mi adatto sempre alle esigenze individuali.
+          <br><br>
+          Ho preparato oltre 300 studenti alla maturità scientifica, con una media dell'87% di soddisfazione e un aumento di almeno 2 voti rispetto alla situazione iniziale. Sono specializzato nel recupero scolastico e nella preparazione ai test universitari di ingegneria, medicina e architettura.
+          <br><br>
+          Le lezioni si svolgono online via Google Meet con lavagna digitale condivisa, oppure in presenza a Roma (zone Prati, Parioli, Centro).
+        </div>
+        <div class="read-more" id="readMoreBtn" onclick="toggleBio()">
+          <i class="ti ti-chevron-down" aria-hidden="true"></i> Leggi tutto
+        </div>
+      </div>
+
+      <!-- MATERIE -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-books" aria-hidden="true"></i> Materie insegnate</div>
+        <div class="subjects-grid">
+          <div class="subj-chip"><i class="ti ti-math-function" aria-hidden="true"></i> Matematica</div>
+          <div class="subj-chip"><i class="ti ti-atom" aria-hidden="true"></i> Fisica</div>
+          <div class="subj-chip"><i class="ti ti-flask" aria-hidden="true"></i> Chimica (base)</div>
+          <div class="subj-chip"><i class="ti ti-school" aria-hidden="true"></i> Matematica universitaria</div>
+          <div class="subj-chip"><i class="ti ti-chart-line" aria-hidden="true"></i> Statistica</div>
+          <div class="subj-chip"><i class="ti ti-device-desktop-analytics" aria-hidden="true"></i> Preparazione test</div>
+        </div>
+
+        <div style="margin-top:20px">
+          <div class="card-title" style="font-size:14px"><i class="ti ti-chart-bar" aria-hidden="true"></i> Livello di competenza</div>
+          <div id="skillBars"></div>
+        </div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-calendar" aria-hidden="true"></i> Disponibilità</div>
+        <div class="cal-header">
+          <div class="cal-month" id="calMonth">Maggio 2026</div>
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="changeMonth(-1)" aria-label="Mese precedente"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+            <button class="cal-nav-btn" onclick="changeMonth(1)" aria-label="Mese successivo"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="cal-days-header">
+          <div class="cal-day-lbl">Lun</div><div class="cal-day-lbl">Mar</div>
+          <div class="cal-day-lbl">Mer</div><div class="cal-day-lbl">Gio</div>
+          <div class="cal-day-lbl">Ven</div><div class="cal-day-lbl">Sab</div>
+          <div class="cal-day-lbl">Dom</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:rgba(45,212,160,.4)"></div> Disponibile</div>
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--purple)"></div> Selezionato</div>
+          <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--border2)"></div> Non disponibile</div>
+        </div>
+
+        <div id="slotsSection" style="display:none">
+          <div class="slots-header" id="slotsHeader">Seleziona un orario</div>
+          <div class="slots-grid" id="slotsGrid"></div>
+          <button class="btn-confirm" id="btnConfirm" disabled onclick="openBooking()">
+            <i class="ti ti-calendar-check" aria-hidden="true"></i> Conferma prenotazione
+          </button>
+        </div>
+      </div>
+
+      <!-- REVIEWS -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-star" aria-hidden="true"></i> Recensioni degli studenti</div>
+        <div class="rating-summary">
+          <div class="big-rating">
+            <div class="big-num">5.0</div>
+            <div class="big-stars">★★★★★</div>
+            <div class="big-lbl">128 recensioni</div>
+          </div>
+          <div class="rating-bars" id="ratingBars"></div>
+        </div>
+        <div class="review-list" id="reviewList"></div>
+        <button class="show-more-btn" onclick="showMoreReviews()">
+          <i class="ti ti-chevron-down" aria-hidden="true"></i> Mostra altre recensioni
+        </button>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COL -->
+    <div class="col-right">
+
+      <!-- INFO CARD -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-info-circle" aria-hidden="true"></i> Informazioni</div>
+        <div class="info-list">
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+            <div><div class="info-label">Posizione</div><div class="info-value">Roma, Italia</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-language" aria-hidden="true"></i></div>
+            <div><div class="info-label">Lingue</div><div class="info-value">Italiano, Inglese</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+            <div><div class="info-label">Formazione</div><div class="info-value">Laurea Magistrale Fisica — Sapienza Roma</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+            <div><div class="info-label">Certificazioni</div><div class="info-value">TFA Abilitante, Cambridge C2</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-device-laptop" aria-hidden="true"></i></div>
+            <div><div class="info-label">Modalità</div><div class="info-value">Online · In presenza (Roma)</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-clock" aria-hidden="true"></i></div>
+            <div><div class="info-label">Durata lezioni</div><div class="info-value">60 min · 90 min · Pacchetti</div></div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon"><i class="ti ti-calendar-stats" aria-hidden="true"></i></div>
+            <div><div class="info-label">Su Skolarix dal</div><div class="info-value">Gennaio 2023</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PACCHETTI -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-package" aria-hidden="true"></i> Pacchetti lezioni</div>
+        <div style="display:flex;flex-direction:column;gap:10px" id="packagesDiv"></div>
+      </div>
+
+      <!-- INSEGNANTI SIMILI -->
+      <div class="card">
+        <div class="card-title"><i class="ti ti-users" aria-hidden="true"></i> Insegnanti simili</div>
+        <div class="similar-list" id="similarList"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- STICKY MOBILE CTA -->
+<div class="sticky-cta" id="stickyCta">
+  <div>
+    <div style="font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--purple)">€22<span style="font-size:12px;font-weight:400;color:var(--muted)">/ora</span></div>
+    <div style="font-size:11px;color:var(--muted)">Marco Rossi · ★ 5.0</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-ghost" onclick="goToChat()"><i class="ti ti-message" aria-hidden="true"></i></button>
+    <button class="btn btn-primary" onclick="openBooking()"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Prenota</button>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-backdrop" id="bookingModal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    <div class="modal-title">Conferma prenotazione</div>
+    <div class="modal-sub">Controlla i dettagli prima di procedere al pagamento</div>
+    <div class="booking-summary">
+      <div class="bs-row"><span>Insegnante</span><span>Marco Rossi</span></div>
+      <div class="bs-row"><span>Materia</span><span id="bsMateria">Matematica</span></div>
+      <div class="bs-row"><span>Data</span><span id="bsData">—</span></div>
+      <div class="bs-row"><span>Orario</span><span id="bsOrario">—</span></div>
+      <div class="bs-row"><span>Durata</span><span>60 minuti</span></div>
+      <div class="bs-row"><span>Tariffa</span><span>€22,00</span></div>
+      <div class="bs-row"><span>Commissione piattaforma (10%)</span><span>€2,20</span></div>
+      <div class="bs-row total"><span>Totale</span><span>€24,20</span></div>
+    </div>
+    <div style="font-size:12px;font-weight:500;color:var(--muted);margin-bottom:10px">Metodo di pagamento</div>
+    <div class="payment-methods">
+      <div class="pm-btn active" onclick="selectPM(this)"><i class="ti ti-credit-card" aria-hidden="true"></i><br>Carta</div>
+      <div class="pm-btn" onclick="selectPM(this)"><i class="ti ti-brand-paypal" aria-hidden="true"></i><br>PayPal</div>
+      <div class="pm-btn" onclick="selectPM(this)"><i class="ti ti-apple" aria-hidden="true"></i><br>Apple Pay</div>
+    </div>
+    <button class="btn-pay" onclick="doPay()">
+      <i class="ti ti-lock" aria-hidden="true"></i> Paga €24,20 in sicurezza
+    </button>
+    <div class="secure-note"><i class="ti ti-shield-check" aria-hidden="true"></i> Pagamento protetto da Stripe · Rimborso garantito</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check" aria-hidden="true"></i> <span id="toastMsg"></span></div>
+
+<script>
+/* ══ DATA ══ */
+const TEACHER = {
+  id:1,name:'Marco Rossi',initials:'MR',
+  color:'rgba(139,124,246,.2)',textColor:'#c4b9ff',
+  price:22,rating:5.0,reviews:128,
+  availableDays:[1,2,3,4,5], // Mon-Fri
+};
+
+const SKILLS = [
+  {name:'Matematica avanzata',pct:98},
+  {name:'Fisica',pct:95},
+  {name:'Analisi e calcolo',pct:92},
+  {name:'Preparazione maturità',pct:99},
+  {name:'Test universitari',pct:90},
+];
+
+const REVIEWS_DATA = [
+  {name:'Anna F.',initials:'AF',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',rating:5,date:'Aprile 2026',text:'Marco è un insegnante eccezionale! Ho preso 9 alla maturità di matematica dopo 3 mesi di lezioni con lui. Spiega tutto con molta chiarezza e pazienza.',tags:['Puntuale','Chiaro','Paziente']},
+  {name:'Giacomo M.',initials:'GM',color:'rgba(45,212,160,.2)',tc:'#2dd4a0',rating:5,date:'Marzo 2026',text:'Preparazione perfetta per il test di ingegneria. Ho passato al primo tentativo! Marco ha un metodo di studio davvero efficace.',tags:['Competente','Metodico']},
+  {name:'Sara T.',initials:'ST',color:'rgba(245,166,35,.2)',tc:'#f5a623',rating:5,date:'Febbraio 2026',text:'In due mesi ho recuperato due anni di fisica. Le sue spiegazioni sono sempre molto chiare e usa esempi concreti dalla vita reale.',tags:['Disponibile','Efficace']},
+  {name:'Lorenzo B.',initials:'LB',color:'rgba(212,83,126,.2)',tc:'#ed93b1',rating:4,date:'Gennaio 2026',text:'Ottimo insegnante, puntuale e preparato. A volte va un po\' veloce ma basta chiedergli di rallentare e lui si adatta subito.',tags:['Preparato','Flessibile']},
+  {name:'Chiara V.',initials:'CV',color:'rgba(99,153,34,.2)',tc:'#97c459',rating:5,date:'Dicembre 2025',text:'Marco ha trasformato la matematica da incubo a materia che amo. Incredibile come riesce a spiegare i concetti più difficili in modo semplice.',tags:['Entusiasta','Creativo']},
+];
+
+const PACKAGES = [
+  {name:'Lezione singola',hours:1,price:22,badge:'',desc:'Prova senza impegno'},
+  {name:'Pacchetto 5 lezioni',hours:5,price:99,badge:'Risparmia €11',desc:'Ideale per recupero'},
+  {name:'Pacchetto 10 lezioni',hours:10,price:185,badge:'Più popolare',desc:'Per preparazione maturità'},
+];
+
+const SIMILAR = [
+  {name:'Francesca Marino',initials:'FM',color:'rgba(139,124,246,.18)',tc:'#afa9ec',subject:'Matematica · Statistica',price:21},
+  {name:'Davide Costa',initials:'DC',color:'rgba(55,138,221,.18)',tc:'#378add',subject:'Fisica · Chimica',price:23},
+  {name:'Stefano Pellegrini',initials:'SP',color:'rgba(139,124,246,.12)',tc:'#534ab7',subject:'Analisi matematica',price:45},
+];
+
+/* ══ CALENDAR ══ */
+let calDate = new Date(2026, 4, 1); // May 2026
+let selectedDate = null;
+let selectedSlot = null;
+
+const MONTH_NAMES = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+const SLOTS = ['09:00','10:00','11:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+const BOOKED_SLOTS = ['10:00','15:00'];
+
+function buildCalendar() {
+  const y = calDate.getFullYear(), m = calDate.getMonth();
+  document.getElementById('calMonth').textContent = `${MONTH_NAMES[m]} ${y}`;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(y, m, 1).getDay();
+  const offset = (firstDay === 0 ? 6 : firstDay - 1);
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const daysInPrev = new Date(y, m, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < offset; i++) {
+    const d = document.createElement('div');
+    d.className = 'cal-cell other-month';
+    d.textContent = daysInPrev - offset + i + 1;
+    grid.appendChild(d);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(y, m, day);
+    const dow = date.getDay(); // 0=Sun,1=Mon,...
+    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isAvail = !isPast && dow >= 1 && dow <= 5; // Mon-Fri
+    const isToday = date.toDateString() === today.toDateString();
+    const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
+
+    const d = document.createElement('div');
+    d.className = 'cal-cell' +
+      (isPast ? ' past' : '') +
+      (isAvail ? ' available' : '') +
+      (isToday ? ' today' : '') +
+      (isSelected ? ' selected' : '');
+    d.textContent = day;
+    if (isAvail) d.onclick = () => selectDate(date);
+    grid.appendChild(d);
+  }
+
+  // fill remaining cells
+  const total = offset + daysInMonth;
+  const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let i = 1; i <= remaining; i++) {
+    const d = document.createElement('div');
+    d.className = 'cal-cell other-month';
+    d.textContent = i;
+    grid.appendChild(d);
+  }
+}
+
+function changeMonth(dir) {
+  calDate.setMonth(calDate.getMonth() + dir);
+  buildCalendar();
+}
+
+function selectDate(date) {
+  selectedDate = date;
+  selectedSlot = null;
+  buildCalendar();
+  buildSlots();
+  document.getElementById('slotsSection').style.display = 'block';
+  document.getElementById('btnConfirm').disabled = true;
+  const days = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+  document.getElementById('slotsHeader').textContent =
+    `Orari disponibili — ${days[date.getDay()]} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]}`;
+}
+
+function buildSlots() {
+  const grid = document.getElementById('slotsGrid');
+  grid.innerHTML = '';
+  SLOTS.forEach(s => {
+    const btn = document.createElement('button');
+    const booked = BOOKED_SLOTS.includes(s);
+    btn.className = 'slot-btn' + (booked ? ' booked' : '');
+    btn.textContent = s;
+    btn.disabled = booked;
+    btn.title = booked ? 'Già prenotato' : '';
+    if (!booked) btn.onclick = () => selectSlot(btn, s);
+    grid.appendChild(btn);
+  });
+}
+
+function selectSlot(btn, slot) {
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedSlot = slot;
+  document.getElementById('btnConfirm').disabled = false;
+  // update modal data
+  if (selectedDate) {
+    const days = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+    document.getElementById('bsData').textContent =
+      `${days[selectedDate.getDay()]} ${selectedDate.getDate()} ${MONTH_NAMES[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
+    document.getElementById('bsOrario').textContent = slot;
+  }
+}
+
+/* ══ SKILL BARS ══ */
+function buildSkillBars() {
+  const cont = document.getElementById('skillBars');
+  SKILLS.forEach(s => {
+    cont.innerHTML += `
+      <div class="skill-row">
+        <div class="skill-header">
+          <span class="skill-name">${s.name}</span>
+          <span class="skill-pct">${s.pct}%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill" style="width:0%" data-w="${s.pct}%"></div></div>
+      </div>`;
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.skill-fill').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+  }, 300);
+}
+
+/* ══ RATING BARS ══ */
+function buildRatingBars() {
+  const dist = [95, 3, 1, 1, 0]; // 5★ to 1★
+  const cont = document.getElementById('ratingBars');
+  for (let i = 5; i >= 1; i--) {
+    const pct = dist[5-i];
+    cont.innerHTML += `
+      <div class="rbar-row">
+        <span class="rbar-lbl">${i}</span>
+        <div class="rbar-track"><div class="rbar-fill" style="width:0%" data-w="${pct}%"></div></div>
+        <span class="rbar-count">${pct}%</span>
+      </div>`;
+  }
+  setTimeout(() => {
+    document.querySelectorAll('.rbar-fill').forEach(el => el.style.width = el.dataset.w);
+  }, 400);
+}
+
+/* ══ REVIEWS ══ */
+let reviewsShown = 3;
+function buildReviews() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  REVIEWS_DATA.slice(0, reviewsShown).forEach(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5-r.rating);
+    list.innerHTML += `
+      <div class="review-item" style="animation:fadeIn .3s ease both">
+        <div class="rev-header">
+          <div class="rev-av" style="background:${r.color};color:${r.tc}">${r.initials}</div>
+          <div>
+            <div class="rev-name">${r.name}</div>
+            <div class="rev-date">${r.date}</div>
+          </div>
+          <div class="rev-stars">${stars}</div>
+        </div>
+        <div class="rev-text">${r.text}</div>
+        <div class="rev-tags">${r.tags.map(t=>`<span class="rev-tag">${t}</span>`).join('')}</div>
+      </div>`;
+  });
+}
+function showMoreReviews() {
+  reviewsShown = Math.min(reviewsShown + 3, REVIEWS_DATA.length);
+  buildReviews();
+  if (reviewsShown >= REVIEWS_DATA.length) {
+    document.querySelector('.show-more-btn').style.display = 'none';
+  }
+}
+
+/* ══ PACKAGES ══ */
+function buildPackages() {
+  const cont = document.getElementById('packagesDiv');
+  PACKAGES.forEach(p => {
+    const perH = (p.price / p.hours).toFixed(0);
+    const badge = p.badge ? `<span style="font-size:11px;padding:2px 8px;border-radius:50px;background:rgba(139,124,246,.15);color:var(--purple);border:1px solid rgba(139,124,246,.3);font-weight:600">${p.badge}</span>` : '';
+    cont.innerHTML += `
+      <div style="padding:14px;background:var(--panel2);border:1px solid var(--border2);border-radius:var(--r-md);cursor:pointer;transition:all .15s" onclick="openBooking()" onmouseover="this.style.borderColor='rgba(139,124,246,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.13)'">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div>
+            <div style="font-size:14px;font-weight:600">${p.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${p.desc} · €${perH}/ora</div>
+          </div>
+          ${badge}
+        </div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--purple)">€${p.price} <span style="font-size:12px;font-weight:400;color:var(--muted)">${p.hours > 1 ? `· ${p.hours} lezioni` : '· 1 lezione'}</span></div>
+      </div>`;
+  });
+}
+
+/* ══ SIMILAR ══ */
+function buildSimilar() {
+  const cont = document.getElementById('similarList');
+  SIMILAR.forEach(t => {
+    cont.innerHTML += `
+      <div class="sim-card" onclick="showToast('Caricamento profilo...')">
+        <div class="sim-av" style="background:${t.color};color:${t.tc}">${t.initials}</div>
+        <div>
+          <div class="sim-name">${t.name}</div>
+          <div class="sim-subject">${t.subject}</div>
+        </div>
+        <div class="sim-price">€${t.price}/h</div>
+      </div>`;
+  });
+}
+
+/* ══ BIO TOGGLE ══ */
+let bioExpanded = false;
+function toggleBio() {
+  bioExpanded = !bioExpanded;
+  const bio = document.getElementById('bioText');
+  const btn = document.getElementById('readMoreBtn');
+  bio.classList.toggle('collapsed', !bioExpanded);
+  btn.innerHTML = bioExpanded
+    ? '<i class="ti ti-chevron-up" aria-hidden="true"></i> Mostra meno'
+    : '<i class="ti ti-chevron-down" aria-hidden="true"></i> Leggi tutto';
+}
+
+/* ══ BOOKING MODAL ══ */
+function openBooking() {
+  if (!selectedDate || !selectedSlot) {
+    showToast('Seleziona prima una data e un orario nel calendario');
+    document.getElementById('slotsSection').scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  document.getElementById('bookingModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeBooking() {
+  document.getElementById('bookingModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('bookingModal')) closeBooking();
+}
+function selectPM(el) {
+  document.querySelectorAll('.pm-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function doPay() {
+  closeBooking();
+  showToast('🎉 Lezione prenotata! Controlla la tua email per i dettagli.');
+  setTimeout(() => window.location.href = 'auth.html#register', 2000);
+}
+function goToChat() {
+  showToast('Registrati per inviare messaggi all\'insegnante');
+  setTimeout(() => window.location.href = 'auth.html#register', 1200);
+}
+
+/* ══ TOAST ══ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ══ INIT ══ */
+buildCalendar();
+buildSkillBars();
+buildRatingBars();
+buildReviews();
+buildPackages();
+buildSimilar();
+
+/* ══ KEYBOARD ══ */
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBooking(); });
+
+/* ══ INTERSECTION OBSERVER for scroll reveal ══ */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.style.animation = 'fadeIn .4s ease both'; });
+}, {threshold: 0.1});
+document.querySelectorAll('.card').forEach(c => obs.observe(c));
+</script>
+</body>
+</html>
