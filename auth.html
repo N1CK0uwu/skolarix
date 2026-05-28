@@ -719,6 +719,9 @@ button{font-family:var(--font-body);cursor:pointer;border:none}
   </div>
 </div>
 
+<!-- Supabase SDK — deve caricare PRIMA dello script principale -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script>
 /* ── CANVAS PARTICLES ── */
 (function(){
@@ -923,94 +926,277 @@ function tagKeydown(e){
 }
 document.addEventListener('click',e=>{if(!e.target.closest('#tags-wrap')&&!e.target.closest('#tag-sugg'))document.getElementById('tag-sugg').style.display='none';});
 
+/* ══════════════════════════════════════════
+   SUPABASE CONFIG
+   Sostituisci con le tue chiavi dal pannello Supabase:
+   Settings → API → Project URL + anon public key
+══════════════════════════════════════════ */
+const SUPABASE_URL  = https://vnlibdhseeztjktnwfvi.supabase.co;   // es. https://abcxyz.supabase.co
+const SUPABASE_ANON = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZubGliZGhzZWV6dGprdG53ZnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODY0NDMsImV4cCI6MjA5NTU2MjQ0M30.SaDqkLQs6fr46VTOBlrSgzwphfAlGQ1zu55G7U-tfkA;      // es. eyJhbGci...
+
+/* ── INIT SUPABASE CLIENT ── */
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: {
+    persistSession: true,          // sessione salvata nel localStorage → rimane loggato
+    autoRefreshToken: true,        // refresh token automatico
+    detectSessionInUrl: true       // gestisce redirect OAuth (Google)
+  }
+});
+
+/* ── CONTROLLA SESSIONE ESISTENTE AL CARICAMENTO ── */
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    // utente già loggato → redirect diretto alla dashboard
+    redirectToDashboard(session.user);
+  }
+})();
+
+/* ── UTILS ── */
+function showAuthError(msg) {
+  let box = document.getElementById('auth-error-box');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'auth-error-box';
+    box.style.cssText = 'background:rgba(232,89,60,.12);border:1px solid rgba(232,89,60,.35);border-radius:10px;padding:10px 14px;font-size:13px;color:#f0997b;margin-bottom:14px;display:flex;align-items:center;gap:8px';
+    box.innerHTML = '<i class="ti ti-alert-circle" aria-hidden="true"></i><span id="auth-error-text"></span>';
+    // inserisce prima del bottone login
+    const btn = document.getElementById('btn-login');
+    if (btn) btn.parentNode.insertBefore(box, btn);
+  }
+  document.getElementById('auth-error-text').textContent = msg;
+  box.style.display = 'flex';
+  setTimeout(() => { if (box) box.style.display = 'none'; }, 5000);
+}
+
+function translateError(err) {
+  const map = {
+    'Invalid login credentials':        'Email o password errata. Riprova.',
+    'Email not confirmed':               'Conferma la tua email prima di accedere.',
+    'User already registered':           'Questa email è già registrata. Accedi invece.',
+    'Password should be at least 6 characters': 'La password deve essere di almeno 6 caratteri.',
+    'Unable to validate email address':  'Indirizzo email non valido.',
+    'Email rate limit exceeded':         'Troppe richieste. Riprova tra qualche minuto.',
+    'Network request failed':            'Problema di connessione. Controlla Internet.',
+  };
+  if (!err) return 'Errore sconosciuto. Riprova.';
+  for (const [k, v] of Object.entries(map)) {
+    if (err.message && err.message.includes(k)) return v;
+  }
+  return err.message || 'Errore. Riprova.';
+}
+
+function redirectToDashboard(user) {
+  // salva ruolo in localStorage per uso rapido nelle altre pagine
+  localStorage.setItem('skolarix_user_id', user.id);
+  localStorage.setItem('skolarix_user_email', user.email);
+  window.location.href = 'dashboard.html';
+}
+
 /* ── LOGIN ── */
-function doLogin(){
-  const em=document.getElementById('login-email').value.trim();
-  const pw=document.getElementById('login-pwd').value;
-  let ok=true;
-  if(!em||!em.includes('@')){setErr('login-email',true);ok=false;}else setErr('login-email',false);
-  if(!pw){setErr('login-pwd',true);ok=false;}else setErr('login-pwd',false);
-  if(!ok)return;
-  const btn=document.getElementById('btn-login');
+async function doLogin() {
+  const em = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pwd').value;
+  let ok = true;
+  if (!em || !em.includes('@')) { setErr('login-email', true); ok = false; } else setErr('login-email', false);
+  if (!pw) { setErr('login-pwd', true); ok = false; } else setErr('login-pwd', false);
+  if (!ok) return;
+
+  const btn = document.getElementById('btn-login');
   btn.classList.add('loading');
-  setTimeout(()=>{btn.classList.remove('loading');window.location.href='dashboard.html';},1200);
+
+  const { data, error } = await sb.auth.signInWithPassword({ email: em, password: pw });
+
+  btn.classList.remove('loading');
+
+  if (error) {
+    showAuthError(translateError(error));
+    return;
+  }
+
+  // login ok → salva "ricordami" e redirect
+  localStorage.setItem('skolarix_remember', 'true');
+  redirectToDashboard(data.user);
 }
 
 /* ── REGISTER ── */
-function doRegister(){
-  if(!document.getElementById('chk-terms').checked){
-    alert('Devi accettare i termini di servizio per continuare');return;
+async function doRegister() {
+  if (!document.getElementById('chk-terms').checked) {
+    alert('Devi accettare i termini di servizio per continuare.');
+    return;
   }
-  const btn=document.getElementById('btn-register');
+
+  const nome    = document.getElementById('reg-nome').value.trim();
+  const cognome = document.getElementById('reg-cognome').value.trim();
+  const email   = document.getElementById('reg-email').value.trim();
+  const pwd     = document.getElementById('reg-pwd').value;
+
+  const btn = document.getElementById('btn-register');
   btn.classList.add('loading');
-  setTimeout(()=>{
+
+  /* 1. Crea utente in Supabase Auth */
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: pwd,
+    options: {
+      data: {
+        nome,
+        cognome,
+        full_name: `${nome} ${cognome}`,
+        role: currentRole,
+      }
+    }
+  });
+
+  if (error) {
     btn.classList.remove('loading');
-    // show success
-    document.getElementById('step-3').classList.remove('active');
-    document.getElementById('step-success').classList.add('active');
-    document.getElementById('sdot-3').classList.remove('active');
-    document.getElementById('sdot-3').classList.add('done');
-    document.getElementById('reg-progress').style.width='100%';
-    const nm=document.getElementById('reg-nome').value;
-    document.getElementById('success-title').textContent=`Benvenuto, ${nm}!`;
-    document.getElementById('success-sub').textContent=currentRole==='student'
-      ?'Il tuo account studente è pronto. Controlla l\'email per la verifica.'
-      :'Il tuo profilo insegnante è in revisione. Ti avvisiamo via email entro 24 ore.';
-    document.getElementById('dash-btn-text').innerHTML=currentRole==='student'
-      ?'<i class="ti ti-search" aria-hidden="true"></i> Cerca il tuo insegnante'
-      :'<i class="ti ti-user-edit" aria-hidden="true"></i> Completa il profilo';
-    startCountdown();
-  },1400);
+    showAuthError(translateError(error));
+    return;
+  }
+
+  const userId = data.user?.id;
+
+  /* 2. Inserisce profilo nella tabella profiles */
+  if (userId) {
+    await sb.from('profiles').upsert({
+      id:       userId,
+      role:     currentRole,
+      nome,
+      cognome,
+    });
+
+    /* 3. Se insegnante, inserisce riga in teachers */
+    if (currentRole === 'teacher') {
+      const price = parseFloat(document.getElementById('reg-price')?.value) || null;
+      const exp   = document.getElementById('reg-exp')?.value || null;
+      await sb.from('teachers').upsert({
+        id:          userId,
+        materie:     selectedTags,
+        prezzo_ora:  price,
+        esperienza:  exp,
+        verified:    false,
+      });
+    }
+  }
+
+  btn.classList.remove('loading');
+
+  /* 4. Mostra schermata di successo */
+  document.getElementById('step-3').classList.remove('active');
+  document.getElementById('step-success').classList.add('active');
+  document.getElementById('sdot-3').classList.remove('active');
+  document.getElementById('sdot-3').classList.add('done');
+  document.getElementById('reg-progress').style.width = '100%';
+
+  document.getElementById('success-title').textContent = `Benvenuto, ${nome}!`;
+  document.getElementById('success-sub').textContent = currentRole === 'student'
+    ? 'Account creato! Controlla la tua email per verificare l\'indirizzo, poi accedi.'
+    : 'Profilo insegnante creato! Controlla l\'email per la verifica. Sarai approvato entro 24 ore.';
+  document.getElementById('dash-btn-text').innerHTML = currentRole === 'student'
+    ? '<i class="ti ti-search" aria-hidden="true"></i> Cerca il tuo insegnante'
+    : '<i class="ti ti-user-edit" aria-hidden="true"></i> Completa il profilo';
+
+  startCountdown();
 }
 
-function startCountdown(){
-  let n=5;
-  const el=document.getElementById('countdown');
-  const iv=setInterval(()=>{n--;el.textContent=n;if(n<=0){clearInterval(iv);goToDashboard();}},1000);
+function startCountdown() {
+  let n = 5;
+  const el = document.getElementById('countdown');
+  const iv = setInterval(() => {
+    n--;
+    el.textContent = n;
+    if (n <= 0) { clearInterval(iv); goToDashboard(); }
+  }, 1000);
 }
 
-function goToDashboard(){window.location.href='dashboard.html';}
+function goToDashboard() { window.location.href = 'dashboard.html'; }
 
 /* ── RESET PASSWORD ── */
-function showResetPwd(){
-  document.getElementById('panel-login').style.display='none';
-  document.getElementById('panel-reset').style.display='';
+function showResetPwd() {
+  document.getElementById('panel-login').style.display = 'none';
+  document.getElementById('panel-reset').style.display = '';
 }
-function backToLogin(){
-  document.getElementById('panel-reset').style.display='none';
-  document.getElementById('panel-login').style.display='';
+function backToLogin() {
+  document.getElementById('panel-reset').style.display = 'none';
+  document.getElementById('panel-login').style.display = '';
 }
-function doReset(){
-  const em=document.getElementById('reset-email').value.trim();
-  if(!em||!em.includes('@')){setErr('reset-email',true);return;}
-  setErr('reset-email',false);
-  document.getElementById('panel-reset').innerHTML=`
+
+async function doReset() {
+  const em = document.getElementById('reset-email').value.trim();
+  if (!em || !em.includes('@')) { setErr('reset-email', true); return; }
+  setErr('reset-email', false);
+
+  const { error } = await sb.auth.resetPasswordForEmail(em, {
+    redirectTo: window.location.origin + '/auth.html?reset=true'
+  });
+
+  if (error) {
+    showAuthError(translateError(error));
+    return;
+  }
+
+  document.getElementById('panel-reset').innerHTML = `
     <div style="text-align:center;padding:20px 0">
-      <div class="success-icon" style="margin:0 auto 20px"><i class="ti ti-mail-check"></i></div>
+      <div class="success-icon" style="margin:0 auto 20px"><i class="ti ti-mail-check" aria-hidden="true"></i></div>
       <div class="form-title">Email inviata!</div>
-      <div class="form-sub" style="margin-bottom:24px">Controlla la tua casella email per il link di reset. Potrebbe trovarsi nello spam.</div>
+      <div class="form-sub" style="margin-bottom:24px">
+        Controlla la tua casella email per il link di reset.<br>
+        Potrebbe trovarsi nello spam.
+      </div>
       <button class="btn-submit" onclick="backToLoginFromReset()" style="max-width:220px;margin:0 auto">
-        <span class="btn-text"><i class="ti ti-arrow-left"></i> Torna al login</span>
+        <span class="btn-text"><i class="ti ti-arrow-left" aria-hidden="true"></i> Torna al login</span>
         <span class="spinner"></span>
       </button>
     </div>`;
 }
-function backToLoginFromReset(){
-  document.getElementById('panel-reset').style.display='none';
-  document.getElementById('panel-login').style.display='';
+function backToLoginFromReset() {
+  document.getElementById('panel-reset').style.display = 'none';
+  document.getElementById('panel-login').style.display = '';
 }
 
-/* ── SOCIAL LOGIN ── */
-function socialLogin(p){alert('Integrazione '+p+' OAuth disponibile con Supabase Auth. Configura le credenziali nel backend.');}
+/* ── SOCIAL LOGIN (Google / GitHub) ── */
+async function socialLogin(provider) {
+  const p = provider.toLowerCase();
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: p,
+    options: {
+      redirectTo: window.location.origin + '/dashboard.html',
+      queryParams: p === 'google' ? { access_type: 'offline', prompt: 'consent' } : {}
+    }
+  });
+  if (error) showAuthError(translateError(error));
+}
+
+/* ── LOGOUT (usabile da altre pagine) ── */
+async function doLogout() {
+  await sb.auth.signOut();
+  localStorage.removeItem('skolarix_user_id');
+  localStorage.removeItem('skolarix_user_email');
+  window.location.href = 'index.html';
+}
+
+/* ── ASCOLTA CAMBI DI SESSIONE ── */
+sb.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    redirectToDashboard(session.user);
+  }
+  if (event === 'PASSWORD_RECOVERY') {
+    // mostra form nuova password
+    switchTab('login');
+    showAuthError('Inserisci la nuova password nel form sottostante.');
+  }
+});
 
 /* ── HASH DETECTION (from index.html links) ── */
-if(window.location.hash === "#register") switchTab("register");
+if (window.location.hash === '#register') switchTab('register');
 
 /* ── ENTER KEY ── */
-document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter')return;
-  if(currentTab==='login')doLogin();
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (currentTab === 'login') doLogin();
 });
 </script>
+
 </body>
 </html>
