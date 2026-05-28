@@ -931,27 +931,26 @@ document.addEventListener('click',e=>{if(!e.target.closest('#tags-wrap')&&!e.tar
    Sostituisci con le tue chiavi dal pannello Supabase:
    Settings → API → Project URL + anon public key
 ══════════════════════════════════════════ */
-const SUPABASE_URL  = 'https://vnlibdhseeztjktnwfvi.supabase.co;   // es. https://abcxyz.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZubGliZGhzZWV6dGprdG53ZnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODY0NDMsImV4cCI6MjA5NTU2MjQ0M30.SaDqkLQs6fr46VTOBlrSgzwphfAlGQ1zu55G7U-tfkA';      // es. eyJhbGci...
+const SUPABASE_URL  = 'https://vnlibdhseeztjktnwfvi.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZubGliZGhzZWV6dGprdG53ZnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5ODY0NDMsImV4cCI6MjA5NTU2MjQ0M30.SaDqkLQs6fr46VTOBlrSgzwphfAlGQ1zu55G7U-tfkA';
 
-/* ── INIT SUPABASE CLIENT ── */
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON, {
-  auth: {
-    persistSession: true,          // sessione salvata nel localStorage → rimane loggato
-    autoRefreshToken: true,        // refresh token automatico
-    detectSessionInUrl: true       // gestisce redirect OAuth (Google)
-  }
-});
-
-/* ── CONTROLLA SESSIONE ESISTENTE AL CARICAMENTO ── */
-(async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    // utente già loggato → redirect diretto alla dashboard
-    redirectToDashboard(session.user);
-  }
-})();
+/* ── MODALITA': reale (chiavi inserite) o demo (chiavi placeholder) ── */
+const SUPABASE_READY = SUPABASE_URL.startsWith('https://') && SUPABASE_ANON.length > 20;
+let sb = null;
+if (SUPABASE_READY) {
+  const { createClient } = supabase;
+  sb = createClient(SUPABASE_URL, SUPABASE_ANON, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) redirectToDashboard(session.user);
+  })();
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) redirectToDashboard(session.user);
+    if (event === 'PASSWORD_RECOVERY') { switchTab('login'); showAuthError('Inserisci la nuova password.'); }
+  });
+}
 
 /* ── UTILS ── */
 function showAuthError(msg) {
@@ -1006,16 +1005,20 @@ async function doLogin() {
   const btn = document.getElementById('btn-login');
   btn.classList.add('loading');
 
-  const { data, error } = await sb.auth.signInWithPassword({ email: em, password: pw });
-
-  btn.classList.remove('loading');
-
-  if (error) {
-    showAuthError(translateError(error));
+  /* MODALITA' DEMO (chiavi Supabase non ancora inserite) */
+  if (!SUPABASE_READY) {
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      localStorage.setItem('skolarix_demo', 'true');
+      localStorage.setItem('skolarix_user_email', em);
+      window.location.href = 'dashboard.html';
+    }, 900);
     return;
   }
 
-  // login ok → salva "ricordami" e redirect
+  const { data, error } = await sb.auth.signInWithPassword({ email: em, password: pw });
+  btn.classList.remove('loading');
+  if (error) { showAuthError(translateError(error)); return; }
   localStorage.setItem('skolarix_remember', 'true');
   redirectToDashboard(data.user);
 }
@@ -1082,6 +1085,27 @@ async function doRegister() {
 
   btn.classList.remove('loading');
 
+  /* MODALITA' DEMO */
+  if (!SUPABASE_READY) {
+    const nome = document.getElementById('reg-nome').value.trim();
+    localStorage.setItem('skolarix_demo', 'true');
+    localStorage.setItem('skolarix_user_email', document.getElementById('reg-email').value.trim());
+    document.getElementById('step-3').classList.remove('active');
+    document.getElementById('step-success').classList.add('active');
+    document.getElementById('sdot-3').classList.remove('active');
+    document.getElementById('sdot-3').classList.add('done');
+    document.getElementById('reg-progress').style.width = '100%';
+    document.getElementById('success-title').textContent = 'Benvenuto, ' + nome + '!';
+    document.getElementById('success-sub').textContent = currentRole === 'student'
+      ? 'Account demo creato. Integra Supabase per la versione reale.'
+      : 'Profilo insegnante demo creato. Integra Supabase per la versione reale.';
+    document.getElementById('dash-btn-text').innerHTML = currentRole === 'student'
+      ? '<i class="ti ti-search"></i> Cerca il tuo insegnante'
+      : '<i class="ti ti-user-edit"></i> Completa il profilo';
+    startCountdown();
+    return;
+  }
+
   /* 4. Mostra schermata di successo */
   document.getElementById('step-3').classList.remove('active');
   document.getElementById('step-success').classList.add('active');
@@ -1127,6 +1151,20 @@ async function doReset() {
   if (!em || !em.includes('@')) { setErr('reset-email', true); return; }
   setErr('reset-email', false);
 
+  if (!SUPABASE_READY) {
+    document.getElementById('panel-reset').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div class="success-icon" style="margin:0 auto 20px"><i class="ti ti-mail-check" aria-hidden="true"></i></div>
+        <div class="form-title">Modalita' demo</div>
+        <div class="form-sub" style="margin-bottom:24px">Inserisci le chiavi Supabase per inviare email reali di reset password.</div>
+        <button class="btn-submit" onclick="backToLoginFromReset()" style="max-width:220px;margin:0 auto">
+          <span class="btn-text"><i class="ti ti-arrow-left" aria-hidden="true"></i> Torna al login</span>
+          <span class="spinner"></span>
+        </button>
+      </div>`;
+    return;
+  }
+
   const { error } = await sb.auth.resetPasswordForEmail(em, {
     redirectTo: window.location.origin + '/auth.html?reset=true'
   });
@@ -1157,6 +1195,10 @@ function backToLoginFromReset() {
 
 /* ── SOCIAL LOGIN (Google / GitHub) ── */
 async function socialLogin(provider) {
+  if (!SUPABASE_READY) {
+    showAuthError('Inserisci le chiavi Supabase per abilitare il login con ' + provider + '.');
+    return;
+  }
   const p = provider.toLowerCase();
   const { error } = await sb.auth.signInWithOAuth({
     provider: p,
