@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skolarix — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#08080c;--dark:#111118;--panel:#17171f;--panel2:#1d1d27;--panel3:#222230;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--border3:rgba(255,255,255,0.2);
+  --purple:#8b7cf6;--purple2:#6d5ce8;--teal:#2dd4a0;--amber:#f5a623;--coral:#e8593c;--blue:#378add;
+  --text:#f0eff8;--muted:rgba(240,239,248,0.55);--muted2:rgba(240,239,248,0.28);
+  --font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+  --r-sm:8px;--r-md:12px;--r-lg:18px;--r-xl:24px;
+  --sidebar-w:240px;--nav-h:60px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font-body);cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:var(--font-body)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(139,124,246,.25);border-radius:2px}
+
+/* ══ LAYOUT ══ */
+.app{display:flex;min-height:100vh}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--dark);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;z-index:50;
+  transition:transform .25s ease;
+}
+.sidebar-header{
+  padding:20px 18px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:-.02em}
+.brand span{color:var(--purple)}
+.sidebar-close{display:none;color:var(--muted);font-size:20px}
+
+.user-card{
+  margin:14px 12px;padding:12px;
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:var(--r-md);display:flex;align-items:center;gap:10px;
+  cursor:pointer;transition:border-color .15s;
+}
+.user-card:hover{border-color:var(--border3)}
+.user-av{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+}
+.user-info{flex:1;min-width:0}
+.user-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:11px;color:var(--muted)}
+.role-badge{
+  font-size:10px;padding:2px 7px;border-radius:50px;font-weight:600;flex-shrink:0;
+}
+.role-student{background:rgba(139,124,246,.15);color:var(--purple);border:1px solid rgba(139,124,246,.3)}
+.role-teacher{background:rgba(45,212,160,.12);color:var(--teal);border:1px solid rgba(45,212,160,.25)}
+
+.nav-section{padding:8px 12px 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2)}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;border-radius:var(--r-sm);margin:1px 8px;
+  font-size:13px;font-weight:500;color:var(--muted);
+  cursor:pointer;transition:all .15s;position:relative;
+}
+.nav-item:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-item.active{background:rgba(139,124,246,.12);color:var(--text)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--purple);border-radius:0 2px 2px 0}
+.nav-item i{font-size:17px;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;min-width:18px;height:18px;border-radius:9px;
+  background:var(--coral);color:#fff;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;padding:0 5px;
+}
+.nav-badge.purple{background:var(--purple)}
+
+.sidebar-footer{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border)}
+
+/* ══ MAIN ══ */
+.main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  height:var(--nav-h);display:flex;align-items:center;
+  padding:0 28px;gap:14px;
+  background:rgba(8,8,12,.8);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:40;
+}
+.topbar-title{font-family:var(--font-display);font-size:17px;font-weight:700;flex:1}
+.topbar-search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:50px;padding:0 14px;height:36px;width:220px;
+  transition:border-color .15s;
+}
+.topbar-search:focus-within{border-color:var(--purple)}
+.topbar-search input{flex:1;background:none;border:none;outline:none;font-size:13px;color:var(--text)}
+.topbar-search input::placeholder{color:var(--muted2)}
+.icon-btn{
+  width:36px;height:36px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--border2);
+  color:var(--muted);font-size:18px;cursor:pointer;transition:all .15s;
+  position:relative;
+}
+.icon-btn:hover{border-color:var(--border3);color:var(--text)}
+.icon-btn .notif-dot{
+  position:absolute;top:6px;right:6px;
+  width:7px;height:7px;border-radius:50%;background:var(--coral);
+  border:2px solid var(--black);
+}
+.hamburger{display:none}
+
+/* ══ CONTENT ══ */
+.content{flex:1;padding:24px 28px;overflow-y:auto}
+
+/* ══ PANELS ══ */
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .25s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ══ CARDS ══ */
+.card{background:var(--panel);border:1px solid var(--border2);border-radius:var(--r-lg);padding:20px}
+.card-sm{padding:16px}
+.card-title{font-family:var(--font-display);font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-title-left{display:flex;align-items:center;gap:7px}
+.card-title i{color:var(--purple);font-size:16px}
+
+/* ══ GRID ══ */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.col-span-2{grid-column:span 2}
+.section-gap{margin-bottom:20px}
+
+/* ══ STAT CARDS ══ */
+.stat-card{
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:var(--r-lg);padding:18px 20px;
+  position:relative;overflow:hidden;
+}
+.stat-card::after{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;
+  opacity:.06;
+}
+.stat-icon{
+  width:38px;height:38px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;margin-bottom:12px;
+}
+.stat-num{font-family:var(--font-display);font-size:1.6rem;font-weight:800;line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:12px;color:var(--muted)}
+.stat-delta{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.delta-up{color:var(--teal)}
+.delta-down{color:var(--coral)}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-sm);padding:8px 16px;font-size:13px;font-weight:500;transition:all .15s;cursor:pointer;border:none}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple2)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.btn-teal{background:var(--teal);color:var(--black);font-weight:600}
+.btn-teal:hover{filter:brightness(1.08)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-danger{background:rgba(232,89,60,.12);color:var(--coral);border:1px solid rgba(232,89,60,.25)}
+.btn-danger:hover{background:rgba(232,89,60,.2)}
+
+/* ══ BOOKING ITEMS ══ */
+.booking-item{
+  display:flex;align-items:center;gap:14px;
+  padding:14px;background:var(--panel2);border:1px solid var(--border);
+  border-radius:var(--r-md);margin-bottom:8px;transition:border-color .15s;
+}
+.booking-item:hover{border-color:var(--border2)}
+.booking-av{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:14px;font-weight:700;
+}
+.booking-info{flex:1;min-width:0}
+.booking-name{font-size:13px;font-weight:500}
+.booking-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.booking-status{
+  font-size:11px;font-weight:600;padding:3px 9px;border-radius:50px;flex-shrink:0;
+}
+.status-pending{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.3)}
+.status-accepted{background:rgba(45,212,160,.1);color:var(--teal);border:1px solid rgba(45,212,160,.25)}
+.status-completed{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border2)}
+.status-rejected{background:rgba(232,89,60,.1);color:var(--coral);border:1px solid rgba(232,89,60,.25)}
+.booking-price{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--purple);flex-shrink:0;margin-left:8px}
+
+/* ══ CHAT ══ */
+.chat-layout{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - var(--nav-h) - 48px);gap:0;background:var(--panel);border:1px solid var(--border2);border-radius:var(--r-lg);overflow:hidden}
+.chat-list{border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.chat-list-header{padding:16px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.chat-search{padding:10px 12px;border-bottom:1px solid var(--border)}
+.chat-search-inp{width:100%;background:var(--panel2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 12px;font-size:13px;color:var(--text);outline:none}
+.chat-search-inp::placeholder{color:var(--muted2)}
+.chat-thread{
+  display:flex;align-items:center;gap:11px;
+  padding:12px 14px;cursor:pointer;transition:background .12s;
+  border-bottom:1px solid var(--border);
+}
+.chat-thread:hover{background:rgba(255,255,255,.04)}
+.chat-thread.active{background:rgba(139,124,246,.08)}
+.chat-av{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;font-weight:700;position:relative}
+.online-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:var(--teal);border:2px solid var(--panel)}
+.chat-thread-info{flex:1;min-width:0}
+.chat-thread-name{font-size:13px;font-weight:500}
+.chat-thread-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.chat-thread-meta{text-align:right;flex-shrink:0}
+.chat-thread-time{font-size:11px;color:var(--muted2)}
+.chat-unread{min-width:18px;height:18px;border-radius:9px;background:var(--purple);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;margin-top:4px;margin-left:auto}
+
+.chat-main{display:flex;flex-direction:column;background:var(--black)}
+.chat-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.chat-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:10px;max-width:75%}
+.msg.sent{align-self:flex-end;flex-direction:row-reverse}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.msg-bubble{
+  padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.55;
+  background:var(--panel);border:1px solid var(--border2);color:var(--text);
+  border-bottom-left-radius:4px;
+}
+.msg.sent .msg-bubble{background:var(--purple);border-color:var(--purple);color:#fff;border-bottom-left-radius:14px;border-bottom-right-radius:4px}
+.msg-time{font-size:10px;color:var(--muted2);margin-top:4px;text-align:right}
+.msg.sent .msg-time{text-align:left}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.chat-inp{
+  flex:1;background:var(--panel);border:1px solid var(--border2);
+  border-radius:50px;padding:9px 16px;font-size:13px;color:var(--text);outline:none;
+  transition:border-color .15s;
+}
+.chat-inp:focus{border-color:var(--purple)}
+.chat-inp::placeholder{color:var(--muted2)}
+.chat-send{
+  width:36px;height:36px;border-radius:50%;background:var(--purple);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-size:16px;cursor:pointer;transition:background .15s;flex-shrink:0;
+}
+.chat-send:hover{background:var(--purple2)}
+
+/* ══ NOTIFICATIONS ══ */
+.notif-item{
+  display:flex;gap:13px;align-items:flex-start;
+  padding:14px;background:var(--panel2);border:1px solid var(--border);
+  border-radius:var(--r-md);margin-bottom:8px;transition:border-color .15s;
+}
+.notif-item.unread{border-color:rgba(139,124,246,.25);background:rgba(139,124,246,.04)}
+.notif-item:hover{border-color:var(--border2)}
+.notif-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.notif-text{flex:1;font-size:13px;line-height:1.55;color:var(--text)}
+.notif-text strong{font-weight:500}
+.notif-time{font-size:11px;color:var(--muted2);flex-shrink:0;margin-top:2px}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px}
+
+/* ══ PAYMENTS ══ */
+.payment-item{
+  display:flex;align-items:center;gap:14px;
+  padding:13px 16px;border-bottom:1px solid var(--border);
+}
+.payment-item:last-child{border:none}
+.pay-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.pay-info{flex:1;min-width:0}
+.pay-name{font-size:13px;font-weight:500}
+.pay-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.pay-amount{font-family:var(--font-display);font-size:15px;font-weight:700;flex-shrink:0}
+.pay-amount.positive{color:var(--teal)}
+.pay-amount.negative{color:var(--text)}
+
+/* ══ PROFILE FORM ══ */
+.form-field{margin-bottom:16px}
+.form-field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.form-field input,.form-field textarea,.form-field select{
+  width:100%;background:var(--panel2);border:1px solid var(--border2);
+  border-radius:var(--r-md);padding:10px 14px;font-size:13px;color:var(--text);
+  outline:none;transition:border-color .15s;
+}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:var(--purple)}
+.form-field input::placeholder,.form-field textarea::placeholder{color:var(--muted2)}
+.form-field textarea{resize:vertical;min-height:90px;line-height:1.6}
+.form-field select option{background:var(--panel)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ══ MINI CALENDAR (overview) ══ */
+.mini-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mini-cal-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.mcal-lbl{text-align:center;font-size:10px;color:var(--muted2);font-weight:600}
+.mcal-cell{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted2);cursor:pointer;transition:all .12s}
+.mcal-cell.today{background:var(--purple);color:#fff;font-weight:600}
+.mcal-cell.has-lesson{color:var(--text);background:rgba(45,212,160,.1);border:1px solid rgba(45,212,160,.2)}
+.mcal-cell.has-lesson:hover{background:rgba(45,212,160,.2)}
+.mcal-cell:hover:not(.today){background:rgba(255,255,255,.06)}
+
+/* ══ PROGRESS RING ══ */
+.progress-ring-wrap{position:relative;width:80px;height:80px;flex-shrink:0}
+.progress-ring-wrap svg{transform:rotate(-90deg)}
+.progress-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.progress-ring-num{font-family:var(--font-display);font-size:16px;font-weight:800;line-height:1}
+.progress-ring-lbl{font-size:9px;color:var(--muted);margin-top:1px;text-align:center}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--teal);color:var(--black);border-radius:var(--r-md);padding:11px 18px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:none;opacity:1}
+
+/* ══ EMPTY STATE ══ */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-state i{font-size:40px;opacity:.3;margin-bottom:12px;display:block}
+.empty-state p{font-size:13px;line-height:1.6}
+
+/* ══ OVERLAY ══ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:45}
+.overlay.open{display:block}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .chat-layout{grid-template-columns:240px 1fr}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .sidebar-close{display:flex}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .col-span-2{grid-column:span 1}
+  .chat-layout{grid-template-columns:1fr}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Skola<span>rix</span></a>
+      <button class="sidebar-close" onclick="closeSidebar()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="user-card" onclick="showPanel('profile')">
+      <div class="user-av" id="sidebarAv" style="background:rgba(139,124,246,.2);color:#c4b9ff">?</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebarName">Caricamento...</div>
+        <div class="user-role" id="sidebarEmail">—</div>
+      </div>
+      <span class="role-badge role-student" id="sidebarRoleBadge">Studente</span>
+    </div>
+
+    <!-- STUDENT NAV -->
+    <div id="nav-student">
+      <div class="nav-section">Principale</div>
+      <div class="nav-item active" onclick="showPanel('overview')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Panoramica</div>
+      <div class="nav-item" onclick="showPanel('search-redirect')"><i class="ti ti-search" aria-hidden="true"></i> Cerca insegnanti</div>
+      <div class="nav-item" onclick="showPanel('bookings')"><i class="ti ti-calendar-event" aria-hidden="true"></i> Prenotazioni <span class="nav-badge">2</span></div>
+      <div class="nav-section">Comunicazione</div>
+      <div class="nav-item" onclick="showPanel('chat')"><i class="ti ti-message" aria-hidden="true"></i> Messaggi <span class="nav-badge purple">3</span></div>
+      <div class="nav-item" onclick="showPanel('notifications')"><i class="ti ti-bell" aria-hidden="true"></i> Notifiche <span class="nav-badge">5</span></div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item" onclick="showPanel('payments')"><i class="ti ti-credit-card" aria-hidden="true"></i> Pagamenti</div>
+      <div class="nav-item" onclick="showPanel('reviews')"><i class="ti ti-star" aria-hidden="true"></i> Recensioni</div>
+      <div class="nav-item" onclick="showPanel('profile')"><i class="ti ti-user" aria-hidden="true"></i> Profilo</div>
+    </div>
+
+    <!-- TEACHER NAV -->
+    <div id="nav-teacher" style="display:none">
+      <div class="nav-section">Principale</div>
+      <div class="nav-item active" onclick="showPanel('overview')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Panoramica</div>
+      <div class="nav-item" onclick="showPanel('requests')"><i class="ti ti-inbox" aria-hidden="true"></i> Richieste <span class="nav-badge">3</span></div>
+      <div class="nav-item" onclick="showPanel('bookings')"><i class="ti ti-calendar" aria-hidden="true"></i> Calendario</div>
+      <div class="nav-section">Comunicazione</div>
+      <div class="nav-item" onclick="showPanel('chat')"><i class="ti ti-message" aria-hidden="true"></i> Messaggi <span class="nav-badge purple">2</span></div>
+      <div class="nav-item" onclick="showPanel('notifications')"><i class="ti ti-bell" aria-hidden="true"></i> Notifiche <span class="nav-badge">4</span></div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item" onclick="showPanel('earnings')"><i class="ti ti-cash" aria-hidden="true"></i> Guadagni</div>
+      <div class="nav-item" onclick="showPanel('reviews')"><i class="ti ti-star" aria-hidden="true"></i> Recensioni</div>
+      <div class="nav-item" onclick="showPanel('profile')"><i class="ti ti-user" aria-hidden="true"></i> Profilo</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="doLogout()" style="color:var(--coral)"><i class="ti ti-logout" aria-hidden="true"></i> Esci</div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <button class="icon-btn hamburger" onclick="openSidebar()" aria-label="Menu"><i class="ti ti-menu-2" aria-hidden="true"></i></button>
+      <div class="topbar-title" id="topbarTitle">Panoramica</div>
+      <div class="topbar-search">
+        <i class="ti ti-search" style="font-size:14px;color:var(--muted2)" aria-hidden="true"></i>
+        <input type="text" placeholder="Cerca...">
+      </div>
+      <button class="icon-btn" onclick="showPanel('notifications')" aria-label="Notifiche">
+        <i class="ti ti-bell" aria-hidden="true"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <button class="icon-btn" onclick="showPanel('chat')" aria-label="Messaggi"><i class="ti ti-message" aria-hidden="true"></i></button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ══ PANEL: OVERVIEW STUDENT ══ -->
+      <div class="panel active" id="panel-overview">
+        <div class="grid-4 section-gap" id="statsRow"></div>
+        <div class="grid-2 section-gap">
+          <!-- Prossime lezioni -->
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><i class="ti ti-calendar-event" aria-hidden="true"></i> Prossime lezioni</div>
+              <button class="btn btn-ghost btn-sm" onclick="showPanel('bookings')">Vedi tutte</button>
+            </div>
+            <div id="upcomingLessons"></div>
+          </div>
+          <!-- Mini calendario -->
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><i class="ti ti-calendar" aria-hidden="true"></i> Maggio 2026</div>
+            </div>
+            <div class="mini-cal-hdr">
+              <div class="mcal-lbl">L</div><div class="mcal-lbl">M</div><div class="mcal-lbl">M</div>
+              <div class="mcal-lbl">G</div><div class="mcal-lbl">V</div><div class="mcal-lbl">S</div><div class="mcal-lbl">D</div>
+            </div>
+            <div class="mini-cal" id="miniCal"></div>
+          </div>
+        </div>
+        <div class="grid-2 section-gap">
+          <!-- Insegnanti recenti -->
+          <div class="card">
+            <div class="card-title">
+              <div class="card-title-left"><i class="ti ti-users" aria-hidden="true"></i> I tuoi insegnanti</div>
+              <button class="btn btn-primary btn-sm" onclick="window.location.href='search.html'"><i class="ti ti-plus" aria-hidden="true"></i> Trova nuovo</button>
+            </div>
+            <div id="myTeachers"></div>
+          </div>
+          <!-- Attività recente -->
+          <div class="card">
+            <div class="card-title"><div class="card-title-left"><i class="ti ti-activity" aria-hidden="true"></i> Attività recente</div></div>
+            <div id="recentActivity"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: BOOKINGS ══ -->
+      <div class="panel" id="panel-bookings">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="bookingTabs">
+            <button class="btn btn-primary btn-sm" data-filter="all" onclick="filterBookings('all',this)">Tutte</button>
+            <button class="btn btn-ghost btn-sm" data-filter="pending" onclick="filterBookings('pending',this)">In attesa</button>
+            <button class="btn btn-ghost btn-sm" data-filter="accepted" onclick="filterBookings('accepted',this)">Accettate</button>
+            <button class="btn btn-ghost btn-sm" data-filter="completed" onclick="filterBookings('completed',this)">Completate</button>
+            <button class="btn btn-ghost btn-sm" data-filter="rejected" onclick="filterBookings('rejected',this)">Rifiutate</button>
+          </div>
+          <button class="btn btn-teal btn-sm" onclick="window.location.href='search.html'"><i class="ti ti-plus" aria-hidden="true"></i> Nuova lezione</button>
+        </div>
+        <div class="card" style="padding:0">
+          <div id="bookingsList" style="padding:8px"></div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: CHAT ══ -->
+      <div class="panel" id="panel-chat">
+        <div class="chat-layout">
+          <div class="chat-list">
+            <div class="chat-list-header">Messaggi <button class="btn btn-primary btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button></div>
+            <div class="chat-search"><input class="chat-search-inp" placeholder="Cerca conversazione..."></div>
+            <div id="chatThreads"></div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-header" id="chatHeader">
+              <div class="chat-av" id="chatAvatar" style="width:36px;height:36px;border-radius:50%;background:rgba(139,124,246,.2);color:#c4b9ff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">MR</div>
+              <div>
+                <div style="font-size:14px;font-weight:500" id="chatName">Marco Rossi</div>
+                <div style="font-size:11px;color:var(--teal)"><i class="ti ti-circle-filled" style="font-size:8px" aria-hidden="true"></i> Online adesso</div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:6px">
+                <button class="icon-btn" title="Videochiamate"><i class="ti ti-video" aria-hidden="true"></i></button>
+                <button class="icon-btn" title="Info"><i class="ti ti-info-circle" aria-hidden="true"></i></button>
+              </div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input-area">
+              <button class="icon-btn" title="Allega file"><i class="ti ti-paperclip" aria-hidden="true"></i></button>
+              <input class="chat-inp" id="chatInput" placeholder="Scrivi un messaggio..." onkeydown="handleChatKey(event)">
+              <button class="icon-btn" title="Emoji"><i class="ti ti-mood-smile" aria-hidden="true"></i></button>
+              <button class="chat-send" onclick="sendMessage()" aria-label="Invia"><i class="ti ti-send" aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: NOTIFICATIONS ══ -->
+      <div class="panel" id="panel-notifications">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-size:13px;color:var(--muted)"><span id="unreadCount">5</span> notifiche non lette</div>
+          <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Segna tutte come lette</button>
+        </div>
+        <div id="notifList"></div>
+      </div>
+
+      <!-- ══ PANEL: PAYMENTS ══ -->
+      <div class="panel" id="panel-payments">
+        <div class="grid-3 section-gap">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(45,212,160,.1);color:var(--teal)"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
+            <div class="stat-num">€147</div>
+            <div class="stat-lbl">Speso questo mese</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(139,124,246,.1);color:var(--purple)"><i class="ti ti-calendar" aria-hidden="true"></i></div>
+            <div class="stat-num">12</div>
+            <div class="stat-lbl">Lezioni pagate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,166,35,.1);color:var(--amber)"><i class="ti ti-receipt" aria-hidden="true"></i></div>
+            <div class="stat-num">€490</div>
+            <div class="stat-lbl">Totale investito</div>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="font-family:var(--font-display);font-size:14px;font-weight:700">Storico pagamenti</div>
+            <button class="btn btn-ghost btn-sm"><i class="ti ti-download" aria-hidden="true"></i> Esporta PDF</button>
+          </div>
+          <div id="paymentsList"></div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: REVIEWS ══ -->
+      <div class="panel" id="panel-reviews">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><i class="ti ti-star" aria-hidden="true"></i> Recensioni lasciate</div></div>
+          <div id="reviewsList"></div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: PROFILE ══ -->
+      <div class="panel" id="panel-profile">
+        <div class="grid-2">
+          <div>
+            <div class="card section-gap">
+              <div class="card-title"><div class="card-title-left"><i class="ti ti-user" aria-hidden="true"></i> Dati personali</div></div>
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div id="profileAv" style="width:64px;height:64px;border-radius:50%;background:rgba(139,124,246,.2);color:#c4b9ff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:800;flex-shrink:0">?</div>
+                <div>
+                  <div style="font-family:var(--font-display);font-size:16px;font-weight:700" id="profileName">—</div>
+                  <div style="font-size:12px;color:var(--muted);margin-top:2px" id="profileEmail">—</div>
+                  <button class="btn btn-ghost btn-sm" style="margin-top:8px"><i class="ti ti-camera" aria-hidden="true"></i> Cambia foto</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field"><label>Nome</label><input type="text" id="pNome" placeholder="Mario"></div>
+                <div class="form-field"><label>Cognome</label><input type="text" id="pCognome" placeholder="Rossi"></div>
+              </div>
+              <div class="form-field"><label>Email</label><input type="email" id="pEmail" placeholder="mario@email.com"></div>
+              <div class="form-field"><label>Bio</label><textarea id="pBio" placeholder="Raccontati in poche righe..."></textarea></div>
+              <div class="form-row">
+                <div class="form-field"><label>Città</label><input type="text" id="pCity" placeholder="Roma"></div>
+                <div class="form-field"><label>Telefono</label><input type="tel" id="pPhone" placeholder="+39 333 1234567"></div>
+              </div>
+              <button class="btn btn-primary" onclick="saveProfile()"><i class="ti ti-check" aria-hidden="true"></i> Salva modifiche</button>
+            </div>
+          </div>
+          <div>
+            <div class="card section-gap">
+              <div class="card-title"><div class="card-title-left"><i class="ti ti-lock" aria-hidden="true"></i> Sicurezza</div></div>
+              <div class="form-field"><label>Password attuale</label><input type="password" placeholder="••••••••"></div>
+              <div class="form-field"><label>Nuova password</label><input type="password" placeholder="••••••••"></div>
+              <div class="form-field"><label>Conferma nuova password</label><input type="password" placeholder="••••••••"></div>
+              <button class="btn btn-ghost" onclick="showToast('Password aggiornata!')"><i class="ti ti-shield-check" aria-hidden="true"></i> Aggiorna password</button>
+            </div>
+            <div class="card">
+              <div class="card-title"><div class="card-title-left"><i class="ti ti-bell" aria-hidden="true"></i> Notifiche</div></div>
+              <div style="display:flex;flex-direction:column;gap:12px" id="notifSettings"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: TEACHER REQUESTS ══ -->
+      <div class="panel" id="panel-requests">
+        <div class="card">
+          <div class="card-title"><div class="card-title-left"><i class="ti ti-inbox" aria-hidden="true"></i> Richieste di lezione</div></div>
+          <div id="requestsList"></div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: EARNINGS ══ -->
+      <div class="panel" id="panel-earnings">
+        <div class="grid-4 section-gap">
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(45,212,160,.1);color:var(--teal)"><i class="ti ti-cash" aria-hidden="true"></i></div>
+            <div class="stat-num">€840</div>
+            <div class="stat-lbl">Guadagni questo mese</div>
+            <div class="stat-delta delta-up"><i class="ti ti-trending-up" aria-hidden="true"></i> +18% vs mese scorso</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(139,124,246,.1);color:var(--purple)"><i class="ti ti-calendar-stats" aria-hidden="true"></i></div>
+            <div class="stat-num">38</div>
+            <div class="stat-lbl">Lezioni erogate</div>
+            <div class="stat-delta delta-up"><i class="ti ti-trending-up" aria-hidden="true"></i> +5 vs mese scorso</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(245,166,35,.1);color:var(--amber)"><i class="ti ti-users" aria-hidden="true"></i></div>
+            <div class="stat-num">12</div>
+            <div class="stat-lbl">Studenti attivi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:rgba(55,138,221,.1);color:var(--blue)"><i class="ti ti-star" aria-hidden="true"></i></div>
+            <div class="stat-num">4.9</div>
+            <div class="stat-lbl">Rating medio</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:16px 18px;border-bottom:1px solid var(--border);font-family:var(--font-display);font-size:14px;font-weight:700">Storico guadagni</div>
+            <div id="earningsList"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><div class="card-title-left"><i class="ti ti-wallet" aria-hidden="true"></i> Saldo disponibile</div></div>
+            <div style="text-align:center;padding:20px 0">
+              <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:800;color:var(--teal)">€320</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:6px">Disponibile per prelievo</div>
+              <button class="btn btn-teal" style="margin-top:16px"><i class="ti ti-arrow-up" aria-hidden="true"></i> Richiedi prelievo</button>
+            </div>
+            <div style="padding:14px;background:var(--panel2);border-radius:var(--r-md);font-size:12px;color:var(--muted);line-height:1.6">
+              <i class="ti ti-info-circle" aria-hidden="true"></i> I pagamenti vengono elaborati tramite Stripe Connect. I prelievi arrivano sul tuo conto in 2-3 giorni lavorativi.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check" aria-hidden="true"></i> <span id="toastMsg"></span></div>
+
+<script>
+/* ══ USER DATA ══ */
+const USER = {
+  nome:  localStorage.getItem('skolarix_user_nome')  || 'Studente',
+  email: localStorage.getItem('skolarix_user_email') || 'utente@email.com',
+  role:  localStorage.getItem('skolarix_user_role')  || 'student',
+  id:    localStorage.getItem('skolarix_user_id')    || null,
+};
+
+/* ══ INIT ══ */
+function init() {
+  const initials = USER.nome.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'U';
+
+  // Sidebar user card
+  document.getElementById('sidebarAv').textContent = initials;
+  document.getElementById('sidebarName').textContent = USER.nome;
+  document.getElementById('sidebarEmail').textContent = USER.email;
+
+  // Role badge & nav
+  const badge = document.getElementById('sidebarRoleBadge');
+  if (USER.role === 'teacher') {
+    badge.textContent = 'Insegnante';
+    badge.className = 'role-badge role-teacher';
+    document.getElementById('nav-student').style.display = 'none';
+    document.getElementById('nav-teacher').style.display = 'block';
+  } else {
+    badge.textContent = 'Studente';
+    badge.className = 'role-badge role-student';
+  }
+
+  // Profile panel
+  document.getElementById('profileAv').textContent = initials;
+  document.getElementById('profileName').textContent = USER.nome;
+  document.getElementById('profileEmail').textContent = USER.email;
+  document.getElementById('pNome').value = USER.nome.split(' ')[0] || '';
+  document.getElementById('pCognome').value = USER.nome.split(' ').slice(1).join(' ') || '';
+  document.getElementById('pEmail').value = USER.email;
+
+  buildStats();
+  buildCalendar();
+  buildUpcomingLessons();
+  buildMyTeachers();
+  buildRecentActivity();
+  buildBookings();
+  buildChat();
+  buildNotifications();
+  buildPayments();
+  buildReviews();
+  buildRequests();
+  buildEarnings();
+  buildNotifSettings();
+}
+
+/* ══ PANEL SWITCHING ══ */
+const PANEL_TITLES = {
+  overview:'Panoramica', bookings:'Prenotazioni', chat:'Messaggi',
+  notifications:'Notifiche', payments:'Pagamenti', reviews:'Recensioni',
+  profile:'Profilo', requests:'Richieste lezione', earnings:'Guadagni',
+};
+function showPanel(name) {
+  if (name === 'search-redirect') { window.location.href = 'search.html'; return; }
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('panel-' + name);
+  if (target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().startsWith(PANEL_TITLES[name]?.split(' ')[0] || '###')) n.classList.add('active');
+  });
+  // find correct nav item by onclick
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick')?.includes(`'${name}'`)) n.classList.add('active');
+  });
+  document.getElementById('topbarTitle').textContent = PANEL_TITLES[name] || name;
+  closeSidebar();
+}
+
+/* ══ STATS ══ */
+function buildStats() {
+  const stats = USER.role === 'student' ? [
+    {icon:'ti-calendar-event', bg:'rgba(139,124,246,.1)', color:'var(--purple)', num:'6', lbl:'Lezioni prenotate', delta:'+2 questa settimana', up:true},
+    {icon:'ti-users', bg:'rgba(45,212,160,.1)', color:'var(--teal)', num:'3', lbl:'Insegnanti attivi', delta:'', up:true},
+    {icon:'ti-clock', bg:'rgba(245,166,35,.1)', color:'var(--amber)', num:'12h', lbl:'Ore di studio', delta:'+3h vs mese scorso', up:true},
+    {icon:'ti-star', bg:'rgba(55,138,221,.1)', color:'var(--blue)', num:'4.8', lbl:'Rating medio ricevuto', delta:'', up:true},
+  ] : [
+    {icon:'ti-cash', bg:'rgba(45,212,160,.1)', color:'var(--teal)', num:'€840', lbl:'Guadagni mese', delta:'+18%', up:true},
+    {icon:'ti-calendar', bg:'rgba(139,124,246,.1)', color:'var(--purple)', num:'38', lbl:'Lezioni erogate', delta:'+5', up:true},
+    {icon:'ti-users', bg:'rgba(245,166,35,.1)', color:'var(--amber)', num:'12', lbl:'Studenti attivi', delta:'', up:true},
+    {icon:'ti-star', bg:'rgba(55,138,221,.1)', color:'var(--blue)', num:'4.9', lbl:'Rating', delta:'', up:true},
+  ];
+  document.getElementById('statsRow').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:${s.bg};color:${s.color}"><i class="ti ${s.icon}" aria-hidden="true"></i></div>
+      <div class="stat-num">${s.num}</div>
+      <div class="stat-lbl">${s.lbl}</div>
+      ${s.delta ? `<div class="stat-delta ${s.up?'delta-up':'delta-down'}"><i class="ti ti-trending-${s.up?'up':'down'}" aria-hidden="true"></i> ${s.delta}</div>` : ''}
+    </div>`).join('');
+}
+
+/* ══ MINI CALENDAR ══ */
+function buildCalendar() {
+  const lessons = [5,7,12,14,19,21,26,28];
+  const today = 28;
+  const grid = document.getElementById('miniCal');
+  const firstDow = 4; // May 1 2026 = Friday → offset 4
+  let cells = '';
+  for (let i=0;i<firstDow;i++) cells += `<div class="mcal-cell"></div>`;
+  for (let d=1;d<=31;d++) {
+    const isToday = d===today;
+    const hasLesson = lessons.includes(d) && !isToday;
+    cells += `<div class="mcal-cell${isToday?' today':hasLesson?' has-lesson':''}">${d}</div>`;
+  }
+  grid.innerHTML = cells;
+}
+
+/* ══ UPCOMING LESSONS ══ */
+const LESSONS = [
+  {teacher:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',subject:'Matematica',date:'Mer 28 Mag · 16:00',status:'accepted',price:'€22'},
+  {teacher:'Sofia Bianchi',initials:'SB',color:'rgba(45,212,160,.2)',tc:'#2dd4a0',subject:'Inglese',date:'Ven 30 Mag · 10:00',status:'pending',price:'€18'},
+  {teacher:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Python',date:'Lun 2 Giu · 15:00',status:'accepted',price:'€28'},
+];
+function buildUpcomingLessons() {
+  document.getElementById('upcomingLessons').innerHTML = LESSONS.slice(0,3).map(l => `
+    <div class="booking-item">
+      <div class="booking-av" style="background:${l.color};color:${l.tc}">${l.initials}</div>
+      <div class="booking-info">
+        <div class="booking-name">${l.teacher}</div>
+        <div class="booking-meta"><i class="ti ti-book-2" style="font-size:11px" aria-hidden="true"></i> ${l.subject} · ${l.date}</div>
+      </div>
+      <span class="booking-status status-${l.status}">${l.status==='accepted'?'Confermata':'In attesa'}</span>
+      <div class="booking-price">${l.price}</div>
+    </div>`).join('');
+}
+
+/* ══ MY TEACHERS ══ */
+function buildMyTeachers() {
+  const teachers = [
+    {name:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',subject:'Matematica',rating:'5.0',online:true},
+    {name:'Sofia Bianchi',initials:'SB',color:'rgba(45,212,160,.2)',tc:'#2dd4a0',subject:'Inglese',rating:'5.0',online:true},
+    {name:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Python',rating:'4.7',online:false},
+  ];
+  document.getElementById('myTeachers').innerHTML = teachers.map(t => `
+    <div class="booking-item" style="cursor:pointer" onclick="window.location.href='teacher.html'">
+      <div style="position:relative">
+        <div class="booking-av" style="background:${t.color};color:${t.tc}">${t.initials}</div>
+        ${t.online?'<div style="position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:var(--teal);border:2px solid var(--panel2)"></div>':''}
+      </div>
+      <div class="booking-info">
+        <div class="booking-name">${t.name}</div>
+        <div class="booking-meta"><i class="ti ti-book-2" style="font-size:11px" aria-hidden="true"></i> ${t.subject}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:var(--amber)">★ ${t.rating}</div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="event.stopPropagation();showPanel('chat')"><i class="ti ti-message" aria-hidden="true"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+/* ══ RECENT ACTIVITY ══ */
+function buildRecentActivity() {
+  const items = [
+    {icon:'ti-calendar-check',color:'var(--teal)',bg:'rgba(45,212,160,.1)',text:'Lezione con Marco Rossi confermata',time:'2 ore fa'},
+    {icon:'ti-message',color:'var(--purple)',bg:'rgba(139,124,246,.1)',text:'Nuovo messaggio da Sofia Bianchi',time:'4 ore fa'},
+    {icon:'ti-credit-card',color:'var(--amber)',bg:'rgba(245,166,35,.1)',text:'Pagamento €22 completato',time:'Ieri'},
+    {icon:'ti-star',color:'var(--amber)',bg:'rgba(245,166,35,.1)',text:'Hai lasciato una recensione a Luca Verdi',time:'2 giorni fa'},
+    {icon:'ti-bell',color:'var(--blue)',bg:'rgba(55,138,221,.1)',text:'Promemoria: lezione domani alle 16:00',time:'3 giorni fa'},
+  ];
+  document.getElementById('recentActivity').innerHTML = items.map(a => `
+    <div class="notif-item" style="margin-bottom:6px">
+      <div class="notif-icon" style="background:${a.bg};color:${a.color}"><i class="ti ${a.icon}" aria-hidden="true"></i></div>
+      <div class="notif-text">${a.text}</div>
+      <div class="notif-time">${a.time}</div>
+    </div>`).join('');
+}
+
+/* ══ BOOKINGS ══ */
+const ALL_BOOKINGS = [
+  {teacher:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',subject:'Matematica',date:'Mer 28 Mag · 16:00',status:'accepted',price:'€22'},
+  {teacher:'Sofia Bianchi',initials:'SB',color:'rgba(45,212,160,.2)',tc:'#2dd4a0',subject:'Inglese',date:'Ven 30 Mag · 10:00',status:'pending',price:'€18'},
+  {teacher:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Python',date:'Lun 2 Giu · 15:00',status:'accepted',price:'€28'},
+  {teacher:'Giulia Ferrari',initials:'GF',color:'rgba(245,166,35,.2)',tc:'#f5a623',subject:'Latino',date:'Mar 21 Mag · 14:00',status:'completed',price:'€20'},
+  {teacher:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',subject:'Fisica',date:'Lun 19 Mag · 17:00',status:'completed',price:'€22'},
+  {teacher:'Elena Romano',initials:'ER',color:'rgba(99,153,34,.2)',tc:'#97c459',subject:'Biologia',date:'Ven 16 Mag · 11:00',status:'rejected',price:'€25'},
+];
+function filterBookings(filter, btn) {
+  document.querySelectorAll('#bookingTabs .btn').forEach(b=>{b.className='btn btn-ghost btn-sm';b.dataset.filter&&b.dataset.filter===filter&&(b.className='btn btn-primary btn-sm')});
+  const filtered = filter==='all' ? ALL_BOOKINGS : ALL_BOOKINGS.filter(b=>b.status===filter);
+  const STATUS = {pending:'In attesa',accepted:'Confermata',completed:'Completata',rejected:'Rifiutata'};
+  document.getElementById('bookingsList').innerHTML = filtered.length ? filtered.map(b => `
+    <div class="booking-item">
+      <div class="booking-av" style="background:${b.color};color:${b.tc}">${b.initials}</div>
+      <div class="booking-info">
+        <div class="booking-name">${b.teacher}</div>
+        <div class="booking-meta"><i class="ti ti-book-2" style="font-size:11px" aria-hidden="true"></i> ${b.subject} · <i class="ti ti-calendar" style="font-size:11px" aria-hidden="true"></i> ${b.date}</div>
+      </div>
+      <span class="booking-status status-${b.status}">${STATUS[b.status]}</span>
+      <div class="booking-price">${b.price}</div>
+      ${b.status==='completed'?`<button class="btn btn-ghost btn-sm" onclick="showToast('Funzione disponibile con Supabase')"><i class="ti ti-star" aria-hidden="true"></i></button>`:''}
+    </div>`).join('') :
+    `<div class="empty-state"><i class="ti ti-calendar-off"></i><p>Nessuna prenotazione trovata</p></div>`;
+}
+function buildBookings(){ filterBookings('all'); }
+
+/* ══ CHAT ══ */
+const THREADS = [
+  {name:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',preview:'Certo, ci vediamo domani alle 16!',time:'14:32',unread:2,online:true},
+  {name:'Sofia Bianchi',initials:'SB',color:'rgba(45,212,160,.2)',tc:'#2dd4a0',preview:'Hai visto il materiale che ti ho mandato?',time:'Ieri',unread:1,online:true},
+  {name:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',tc:'#85b7eb',preview:'La funzione ricorsiva è molto chiara adesso',time:'Lun',unread:0,online:false},
+];
+const MESSAGES = [
+  {from:'them',text:'Ciao! Per domani ti confermo la lezione alle 16:00. Useremmo Google Meet come al solito?',time:'14:20'},
+  {from:'me',text:'Perfetto, sì Google Meet va benissimo. Dovremmo ripassare le equazioni differenziali?',time:'14:25'},
+  {from:'them',text:'Assolutamente! Ho preparato degli esercizi su Cauchy e Lagrange. Porta anche i tuoi appunti dell\'ultima volta.',time:'14:28'},
+  {from:'me',text:'Li ho già pronti! A domani allora.',time:'14:30'},
+  {from:'them',text:'Certo, ci vediamo domani alle 16! 👍',time:'14:32'},
+];
+function buildChat() {
+  document.getElementById('chatThreads').innerHTML = THREADS.map((t,i) => `
+    <div class="chat-thread ${i===0?'active':''}" onclick="selectThread(${i})">
+      <div class="chat-av" style="background:${t.color};color:${t.tc}">
+        ${t.initials}
+        ${t.online?'<div class="online-dot"></div>':''}
+      </div>
+      <div class="chat-thread-info">
+        <div class="chat-thread-name">${t.name}</div>
+        <div class="chat-thread-preview">${t.preview}</div>
+      </div>
+      <div class="chat-thread-meta">
+        <div class="chat-thread-time">${t.time}</div>
+        ${t.unread?`<div class="chat-unread">${t.unread}</div>`:''}
+      </div>
+    </div>`).join('');
+  renderMessages();
+}
+function selectThread(i) {
+  const t = THREADS[i];
+  document.getElementById('chatName').textContent = t.name;
+  document.getElementById('chatAvatar').textContent = t.initials;
+  document.getElementById('chatAvatar').style.background = t.color;
+  document.getElementById('chatAvatar').style.color = t.tc;
+  document.querySelectorAll('.chat-thread').forEach((el,j)=>el.classList.toggle('active',j===i));
+}
+function renderMessages() {
+  document.getElementById('chatMessages').innerHTML = MESSAGES.map(m => `
+    <div class="msg ${m.from==='me'?'sent':''}">
+      ${m.from!=='me'?`<div class="msg-av" style="background:rgba(139,124,246,.2);color:#c4b9ff">MR</div>`:''}
+      <div>
+        <div class="msg-bubble">${m.text}</div>
+        <div class="msg-time">${m.time}</div>
+      </div>
+    </div>`).join('');
+  const msgs = document.getElementById('chatMessages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function sendMessage() {
+  const inp = document.getElementById('chatInput');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  MESSAGES.push({from:'me',text:txt,time:new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})});
+  renderMessages();
+  inp.value = '';
+  setTimeout(() => {
+    MESSAGES.push({from:'them',text:'Messaggio ricevuto! (risposta automatica demo)',time:new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})});
+    renderMessages();
+  }, 1200);
+}
+function handleChatKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+/* ══ NOTIFICATIONS ══ */
+const NOTIFS = [
+  {icon:'ti-calendar-check',bg:'rgba(45,212,160,.1)',color:'var(--teal)',text:'<strong>Marco Rossi</strong> ha confermato la lezione di <strong>Matematica</strong> per mercoledì 28 maggio alle 16:00.',time:'2 ore fa',unread:true},
+  {icon:'ti-message',bg:'rgba(139,124,246,.1)',color:'var(--purple)',text:'Nuovo messaggio da <strong>Sofia Bianchi</strong>: "Hai visto il materiale che ti ho mandato?"',time:'4 ore fa',unread:true},
+  {icon:'ti-bell',bg:'rgba(245,166,35,.1)',color:'var(--amber)',text:'<strong>Promemoria:</strong> Lezione di Inglese con Sofia Bianchi tra 1 ora.',time:'5 ore fa',unread:true},
+  {icon:'ti-credit-card',bg:'rgba(55,138,221,.1)',color:'var(--blue)',text:'Pagamento di <strong>€22</strong> per la lezione di Matematica elaborato con successo.',time:'Ieri',unread:true},
+  {icon:'ti-star',bg:'rgba(245,166,35,.1)',color:'var(--amber)',text:'<strong>Luca Verdi</strong> ha risposto alla tua recensione.',time:'2 giorni fa',unread:true},
+  {icon:'ti-user-check',bg:'rgba(45,212,160,.1)',color:'var(--teal)',text:'<strong>Elena Romano</strong> è ora disponibile nella tua fascia oraria preferita.',time:'3 giorni fa',unread:false},
+];
+function buildNotifications() {
+  document.getElementById('notifList').innerHTML = NOTIFS.map(n => `
+    <div class="notif-item ${n.unread?'unread':''}">
+      ${n.unread?'<div class="notif-dot"></div>':'<div style="width:7px;flex-shrink:0"></div>'}
+      <div class="notif-icon" style="background:${n.bg};color:${n.color}"><i class="ti ${n.icon}" aria-hidden="true"></i></div>
+      <div class="notif-text">${n.text}</div>
+      <div class="notif-time">${n.time}</div>
+    </div>`).join('');
+}
+function markAllRead() {
+  NOTIFS.forEach(n=>n.unread=false);
+  buildNotifications();
+  document.getElementById('unreadCount').textContent = '0';
+  showToast('Tutte le notifiche segnate come lette');
+}
+
+/* ══ PAYMENTS ══ */
+function buildPayments() {
+  const payments = [
+    {name:'Lezione Matematica — Marco Rossi',date:'28 Mag 2026',amount:'−€22',positive:false,icon:'ti-school',bg:'rgba(139,124,246,.1)',color:'var(--purple)'},
+    {name:'Lezione Inglese — Sofia Bianchi',date:'21 Mag 2026',amount:'−€18',positive:false,icon:'ti-language',bg:'rgba(45,212,160,.1)',color:'var(--teal)'},
+    {name:'Pacchetto 5 lezioni — Luca Verdi',date:'15 Mag 2026',amount:'−€99',positive:false,icon:'ti-code',bg:'rgba(55,138,221,.1)',color:'var(--blue)'},
+    {name:'Rimborso lezione cancellata',date:'10 Mag 2026',amount:'+€25',positive:true,icon:'ti-rotate-clockwise',bg:'rgba(45,212,160,.1)',color:'var(--teal)'},
+    {name:'Lezione Latino — Giulia Ferrari',date:'5 Mag 2026',amount:'−€20',positive:false,icon:'ti-book',bg:'rgba(245,166,35,.1)',color:'var(--amber)'},
+  ];
+  document.getElementById('paymentsList').innerHTML = payments.map(p => `
+    <div class="payment-item">
+      <div class="pay-icon" style="background:${p.bg};color:${p.color}"><i class="ti ${p.icon}" aria-hidden="true"></i></div>
+      <div class="pay-info">
+        <div class="pay-name">${p.name}</div>
+        <div class="pay-meta">${p.date}</div>
+      </div>
+      <div class="pay-amount ${p.positive?'positive':''}">${p.amount}</div>
+    </div>`).join('');
+}
+
+/* ══ REVIEWS ══ */
+function buildReviews() {
+  const reviews = [
+    {teacher:'Marco Rossi',initials:'MR',color:'rgba(139,124,246,.2)',tc:'#c4b9ff',subject:'Matematica',rating:5,text:'Ottimo insegnante, molto paziente e chiaro nelle spiegazioni. Ho finalmente capito le derivate!',date:'Mag 2026'},
+    {teacher:'Luca Verdi',initials:'LV',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Python',rating:5,text:'Luca è fantastico. In poche lezioni sono passato da zero a creare piccoli programmi.',date:'Apr 2026'},
+  ];
+  document.getElementById('reviewsList').innerHTML = reviews.length ? reviews.map(r => `
+    <div style="padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:40px;height:40px;border-radius:50%;background:${r.color};color:${r.tc};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;font-weight:700">${r.initials}</div>
+        <div>
+          <div style="font-size:13px;font-weight:500">${r.teacher} · ${r.subject}</div>
+          <div style="color:var(--amber);font-size:13px">${'★'.repeat(r.rating)}</div>
+        </div>
+        <div style="margin-left:auto;font-size:11px;color:var(--muted)">${r.date}</div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">${r.text}</div>
+    </div>`).join('') :
+    `<div class="empty-state"><i class="ti ti-star-off"></i><p>Nessuna recensione ancora.<br>Completa una lezione per recensire il tuo insegnante.</p></div>`;
+}
+
+/* ══ TEACHER REQUESTS ══ */
+function buildRequests() {
+  const reqs = [
+    {student:'Anna Ferrari',initials:'AF',color:'rgba(212,83,126,.2)',tc:'#ed93b1',subject:'Matematica',date:'Gio 29 Mag · 15:00',message:'Salve, avrei bisogno di aiuto per la preparazione alla maturità. Ho lacune su integrali e limiti.'},
+    {student:'Davide Costa',initials:'DC',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Fisica',date:'Ven 30 Mag · 10:00',message:'Ho l\'esame di Fisica tra 2 settimane, ho bisogno di ripassare termodinamica ed elettromagnetismo.'},
+    {student:'Marta Russo',initials:'MR',color:'rgba(99,153,34,.2)',tc:'#97c459',subject:'Matematica',date:'Sab 31 Mag · 11:00',message:'Prima lezione di prova? Voglio capire il tuo metodo prima di prenotare un pacchetto.'},
+  ];
+  document.getElementById('requestsList').innerHTML = reqs.map(r => `
+    <div style="padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap">
+        <div style="width:40px;height:40px;border-radius:50%;background:${r.color};color:${r.tc};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;font-weight:700;flex-shrink:0">${r.initials}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500">${r.student}</div>
+          <div style="font-size:12px;color:var(--muted)"><i class="ti ti-book-2" style="font-size:11px" aria-hidden="true"></i> ${r.subject} · <i class="ti ti-calendar" style="font-size:11px" aria-hidden="true"></i> ${r.date}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-teal btn-sm" onclick="showToast('Richiesta accettata!')"><i class="ti ti-check" aria-hidden="true"></i> Accetta</button>
+          <button class="btn btn-danger btn-sm" onclick="showToast('Richiesta rifiutata')"><i class="ti ti-x" aria-hidden="true"></i> Rifiuta</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;padding:10px;background:var(--panel);border-radius:var(--r-sm)">"${r.message}"</div>
+    </div>`).join('');
+}
+
+/* ══ EARNINGS ══ */
+function buildEarnings() {
+  const items = [
+    {student:'Anna Ferrari',initials:'AF',color:'rgba(212,83,126,.2)',tc:'#ed93b1',subject:'Matematica',date:'28 Mag 2026',amount:'+€19.80'},
+    {student:'Davide Costa',initials:'DC',color:'rgba(55,138,221,.2)',tc:'#85b7eb',subject:'Fisica',date:'26 Mag 2026',amount:'+€19.80'},
+    {student:'Marta Russo',initials:'MR2',color:'rgba(99,153,34,.2)',tc:'#97c459',subject:'Matematica',date:'24 Mag 2026',amount:'+€19.80'},
+    {student:'Luigi Bianchi',initials:'LB',color:'rgba(245,166,35,.2)',tc:'#f5a623',subject:'Fisica',date:'21 Mag 2026',amount:'+€19.80'},
+  ];
+  document.getElementById('earningsList').innerHTML = items.map(i => `
+    <div class="payment-item">
+      <div style="width:36px;height:36px;border-radius:50%;background:${i.color};color:${i.tc};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:700;flex-shrink:0">${i.initials}</div>
+      <div class="pay-info">
+        <div class="pay-name">${i.student} · ${i.subject}</div>
+        <div class="pay-meta">${i.date} · dopo commissione 10%</div>
+      </div>
+      <div class="pay-amount positive">${i.amount}</div>
+    </div>`).join('');
+}
+
+/* ══ NOTIF SETTINGS ══ */
+function buildNotifSettings() {
+  const settings = [
+    {label:'Nuove prenotazioni',on:true},
+    {label:'Messaggi in chat',on:true},
+    {label:'Promemoria lezioni',on:true},
+    {label:'Pagamenti',on:true},
+    {label:'Newsletter Skolarix',on:false},
+  ];
+  document.getElementById('notifSettings').innerHTML = settings.map((s,i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:13px;color:var(--muted)">${s.label}</span>
+      <div style="width:34px;height:19px;border-radius:10px;background:${s.on?'var(--purple)':'var(--border2)'};position:relative;cursor:pointer;transition:background .2s" onclick="toggleNotif(this)">
+        <div style="position:absolute;width:13px;height:13px;border-radius:50%;background:#fff;top:3px;${s.on?'left:18px':'left:3px'};transition:left .2s"></div>
+      </div>
+    </div>`).join('');
+}
+function toggleNotif(el) {
+  const isOn = el.style.background.includes('purple') || el.style.background === 'var(--purple)';
+  el.style.background = isOn ? 'var(--border2)' : 'var(--purple)';
+  const dot = el.querySelector('div');
+  dot.style.left = isOn ? '3px' : '18px';
+}
+
+/* ══ PROFILE SAVE ══ */
+function saveProfile() {
+  const nome = document.getElementById('pNome').value;
+  const cognome = document.getElementById('pCognome').value;
+  if (nome) localStorage.setItem('skolarix_user_nome', nome + (cognome ? ' ' + cognome : ''));
+  showToast('Profilo aggiornato con successo!');
+}
+
+/* ══ SIDEBAR ══ */
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ══ LOGOUT ══ */
+function doLogout() {
+  ['skolarix_demo','skolarix_user_id','skolarix_user_email','skolarix_user_nome','skolarix_user_role'].forEach(k => localStorage.removeItem(k));
+  window.location.href = 'index.html';
+}
+
+/* ══ TOAST ══ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+init();
+</script>
+</body>
+</html>
